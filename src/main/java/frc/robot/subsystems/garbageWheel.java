@@ -25,7 +25,7 @@ public class garbageWheel extends SubsystemBase {
   private JoystickButton button7;
   private JoystickButton button8;
 
-  private double motor10speed = 0.8; // We might need to change this later :)
+  private double motor10speed = 1; // We might need to change this later :)
 
   public garbageWheel() {
     motor9 = new TalonSRX(9);

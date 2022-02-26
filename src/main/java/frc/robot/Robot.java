@@ -29,6 +29,8 @@ import frc.robot.subsystems.falcon500;
 import frc.robot.subsystems.solenoidCode;
 import edu.wpi.first.wpilibj.Compressor;
 
+import edu.wpi.first.cameraserver.CameraServer;
+
 
 /** This is a demo program showing how to use Mecanum control with the MecanumDrive class. */
 public class Robot extends TimedRobot {
@@ -59,13 +61,15 @@ public class Robot extends TimedRobot {
     CANSparkMax m_leftMotor = new CANSparkMax(7, MotorType.kBrushless);
     CANSparkMax m_rightMotor = new CANSparkMax(8, MotorType.kBrushless);
     m_shooterControl = new DifferentialDrive(m_leftMotor, m_rightMotor);
+
+    CameraServer.startAutomaticCapture();
   
 
     // Invert the right side motors.
     // You may need to change or remove this to match your robot.
-    frontRightSpark.setInverted(true);
-    rearRightSpark.setInverted(true); 
-    m_rightMotor.setInverted(false);
+    frontRightSpark.setInverted(false);
+    rearRightSpark.setInverted(false); 
+    m_rightMotor.setInverted(true);
 
     m_robotDrive = new MecanumDrive(frontLeftSpark, rearLeftSpark, frontRightSpark, rearRightSpark);
 

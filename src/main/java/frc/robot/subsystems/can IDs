@@ -1,0 +1,31 @@
+can ID's 
+
+ID 0: RoboRio2
+ID 1: Power Distibution Hub
+ID 2: Pnematic Hub
+ID 3: Front Left Mecanum Wheel
+ID 4: Front Right Mecanum Wheel
+ID 5: Back Left Mecanum Wheel
+ID 6: Back Right Mecanum Wheel
+ID 7: Left Shooter Motor
+ID 8: Right Shooter Motor
+ID 9: Intake NeveRest (Talon SRX)
+ID 10: Ball Lift NeveRest (Talon SRX)
+
+note: set the max speed of the m_shooterControl to be 20%
+when shooting for the low goal
+
+note: try to up the output speed of the talon SRX & the neveRest
+
+
+
+
+
+
+
+
+hi 
+
+i wrote this :)
+
+
