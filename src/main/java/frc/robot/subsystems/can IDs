@@ -12,10 +12,8 @@ ID 8: Right Shooter Motor
 ID 9: Intake NeveRest (Talon SRX)
 ID 10: Ball Lift NeveRest (Talon SRX)
 
-note: set the max speed of the m_shooterControl to be 20%
-when shooting for the low goal
 
-note: try to up the output speed of the talon SRX & the neveRest
+
 
 
 

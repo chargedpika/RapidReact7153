@@ -24,7 +24,9 @@ public class garbageWheel extends SubsystemBase {
   private Joystick joystick;
   private JoystickButton button7;
   private JoystickButton button8;
-
+  private JoystickButton button9;
+  private JoystickButton button10;
+  private double motor9speed = 1.0;
   private double motor10speed = 1; // We might need to change this later :)
 
   public garbageWheel() {
@@ -34,10 +36,12 @@ public class garbageWheel extends SubsystemBase {
     joystick = new Joystick(2);
     button7 = new JoystickButton(joystick, 7);
     button8 = new JoystickButton(joystick, 8);
+    button9 = new JoystickButton(joystick, 9);
+    button10 = new JoystickButton(joystick, 10);
   }
 
   public void minerMyBeloved() {
-    motor9.set(ControlMode.PercentOutput, joystick.getY());
+    //motor9.set(ControlMode.PercentOutput, joystick.getY());
 
     if (button7.get()) {
       motor10.set(ControlMode.PercentOutput, motor10speed);
@@ -47,4 +51,18 @@ public class garbageWheel extends SubsystemBase {
       motor10.set(ControlMode.PercentOutput, 0.0);
     }
   }
+
+  public void sus() {
+   // motor9.set(ControlMode.PercentOutput, joystick.getY());
+
+    if (button9.get()) {
+      motor9.set(ControlMode.PercentOutput, motor9speed);
+    } else if (button10.get()) {
+      motor9.set(ControlMode.PercentOutput, 0-motor9speed);
+    } else {
+      motor9.set(ControlMode.PercentOutput, 0.0);
+    }
+  }
+
+
 }

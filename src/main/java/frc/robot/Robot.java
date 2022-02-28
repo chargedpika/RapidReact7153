@@ -85,9 +85,15 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
      
     m_robotDrive.driveCartesian(-DriveJoy.getY(), DriveJoy.getX(), DriveJoy.getZ(), 0.0);
-    m_shooterControl.arcadeDrive(-FXNJoy.getY(), 0);
+   // m_shooterControl.arcadeDrive(-FXNJoy.getY(), 0);
+    if (FXNJoy.getTrigger()) {
+      m_shooterControl.arcadeDrive(-0.6, 0);
+    } else {
+      m_shooterControl.arcadeDrive(0, 0);
+    }
     idiorWhel.minerMyBeloved(); // ignore this pls
     falcon.move();
     moverThingy.amogus(); 
-  }
+    idiorWhel.sus();
+    }
 }

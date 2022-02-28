@@ -26,9 +26,9 @@ public class limelight extends SubsystemBase {
   NetworkTableEntry ta = table.getEntry("ta");
   public Boolean aligned = false;
   private PID pid = new PID(0.35,
-                              0.25, 
+                              0.2, 
                               0.1,
-                               0.2, 
+                               0.25, 
                                -0.2); 
 
 	  public limelight() {

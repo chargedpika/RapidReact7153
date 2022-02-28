@@ -7,6 +7,10 @@
 
 // why do we have this?????????
 // - jonah
+// It's for controlling the flow, pressure, speed, and temp (more stuff too) 
+// Using differential and partial differentials (the math of change)
+// You wouldn't want to manually do the math, trust me
+// - Matt
 
 
 package frc.robot.subsystems;
@@ -50,7 +54,7 @@ public class PID {
 
     private double I(double error, double dt){
         double midpoint = ((error + pastError)/2)*kI;
-        double integral = (midpoint * dt) + integAcum; //something to fix here
+        double integral = (midpoint * dt) + integAcum; //something to fix
         this.integAcum = integral;
         return this.kI * integral;
     }
