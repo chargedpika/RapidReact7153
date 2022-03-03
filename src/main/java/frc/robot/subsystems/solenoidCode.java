@@ -20,12 +20,18 @@ public class solenoidCode extends SubsystemBase {
   private final Joystick m_stick = new Joystick(2);
   private final JoystickButton TURNON = new JoystickButton(m_stick, 3);
   private final JoystickButton TURNOFF = new JoystickButton(m_stick, 5);
+  private final JoystickButton goUp = new JoystickButton(m_stick, 4);
+  private final JoystickButton goDown = new JoystickButton(m_stick, 6);
+  //private final JoystickButton winchUp = new JoystickButton(m_stick, )
 
-  // Solenoid corresponds to a single solenoid.
-  //private final Solenoid m_solenoid = new Solenoid(PneumaticsModuleType.REVPH, 2); 
 
   // DoubleSolenoid corresponds to a double solenoid.
-  private final DoubleSolenoid m_doubleSolenoid = new DoubleSolenoid(2, type, 1, 2);
+  private final DoubleSolenoid frontRight_doubleSolenoid = new DoubleSolenoid(2, type, 9, 8);
+  private final DoubleSolenoid frontLeft_doubleSolenoid = new DoubleSolenoid(2, type, 7, 6);
+  private final DoubleSolenoid barGrabberLeft_doubleSolenoid = new DoubleSolenoid(2, type, 5, 4);
+  private final DoubleSolenoid barGrabberRight_DoubleSolenoid = new DoubleSolenoid(2, type, 3, 2);
+  private final DoubleSolenoid whinchSolenoid = new DoubleSolenoid(2, type, 1, 0);
+
   private final Compressor comp = new Compressor(2, type);
   //Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
@@ -53,9 +59,19 @@ public class solenoidCode extends SubsystemBase {
      * If both are pressed, set the solenoid will be set to Forwards.
      */
     if (TURNON.get()) {
-      m_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+      frontLeft_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+      frontRight_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
     } else if (TURNOFF.get()) {
-      m_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+      frontLeft_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+      frontRight_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+    }
+
+    if (goUp.get()) {
+      barGrabberLeft_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+      barGrabberRight_DoubleSolenoid.set(DoubleSolenoid.Value.kForward);
+    } else if (goDown.get()); {
+      barGrabberRight_DoubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+      barGrabberLeft_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
     if (m_stick.getTrigger()) {
