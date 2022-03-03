@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import frc.robot.subsystems.garbageWheel;
+import frc.robot.subsystems.talonSRXwheel;
 import frc.robot.subsystems.falcon500;
 import frc.robot.subsystems.solenoidCode;
 import edu.wpi.first.wpilibj.Compressor;
@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
   private DifferentialDrive m_shooterControl;
   private MecanumDrive m_robotDrive;
   private static Joystick DriveJoy = new Joystick(0), FXNJoy = new Joystick(1);
-  private garbageWheel idiorWhel = new garbageWheel();
+  private talonSRXwheel falconCode = new talonSRXwheel();
   private falcon500 falcon = new falcon500();
   private solenoidCode moverThingy = new solenoidCode();
 
@@ -103,9 +103,9 @@ public class Robot extends TimedRobot {
     } else {
       m_shooterControl.arcadeDrive(0, 0);
     }
-    idiorWhel.minerMyBeloved(); // ignore this pls
-    falcon.move();
+    falconCode.ballLift(); // ignore this pls
+    //falcon.move(); unused until further notice.
     moverThingy.amogus(); 
-    idiorWhel.sus();
+    falconCode.intakeWheel();
     }
 }

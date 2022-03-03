@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * <p>Joystick analog values range from -1 to 1 and speed controller inputs also range from -1 to 1
  * making it easy to work together.
  */
-public class garbageWheel extends SubsystemBase {
+public class talonSRXwheel extends SubsystemBase {
   private TalonSRX motor9;
   private TalonSRX motor10;
 
@@ -29,7 +29,7 @@ public class garbageWheel extends SubsystemBase {
   private double motor9speed = 1.0;
   private double motor10speed = .8; // We might need to change this later :)
 
-  public garbageWheel() {
+  public talonSRXwheel() {
     motor9 = new TalonSRX(9);
     motor10 = new TalonSRX(10);
 
@@ -40,7 +40,7 @@ public class garbageWheel extends SubsystemBase {
     button10 = new JoystickButton(joystick, 10);
   }
 
-  public void minerMyBeloved() {
+  public void ballLift() {
     //motor9.set(ControlMode.PercentOutput, joystick.getY());
 
     if (button8.get()) {
@@ -52,7 +52,7 @@ public class garbageWheel extends SubsystemBase {
     }
   }
 
-  public void sus() {
+  public void intakeWheel() {
    // motor9.set(ControlMode.PercentOutput, joystick.getY());
 
     if (button9.get()) {
