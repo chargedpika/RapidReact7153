@@ -25,7 +25,8 @@ public class solenoidCode extends SubsystemBase {
   //private final Solenoid m_solenoid = new Solenoid(PneumaticsModuleType.REVPH, 2); 
 
   // DoubleSolenoid corresponds to a double solenoid.
-  private final DoubleSolenoid m_doubleSolenoid = new DoubleSolenoid(2, type, 1, 2);
+  private final DoubleSolenoid l_doubleSolenoid = new DoubleSolenoid(2, type, 8, 9);
+  private final DoubleSolenoid r_doubleSolenoid = new DoubleSolenoid(2, type, 6, 7);
   private final Compressor comp = new Compressor(2, type);
   //Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
@@ -53,9 +54,11 @@ public class solenoidCode extends SubsystemBase {
      * If both are pressed, set the solenoid will be set to Forwards.
      */
     if (TURNON.get()) {
-      m_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+      l_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+      r_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
     } else if (TURNOFF.get()) {
-      m_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+      l_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+      r_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
     if (m_stick.getTrigger()) {

@@ -28,6 +28,7 @@ import frc.robot.subsystems.garbageWheel;
 import frc.robot.subsystems.falcon500;
 import frc.robot.subsystems.solenoidCode;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.XboxController; //harmless potential import
 
 import edu.wpi.first.cameraserver.CameraServer;
 
@@ -39,6 +40,9 @@ public class Robot extends TimedRobot {
   private static final int kFrontRightChannel = 1;
   private static final int kRearRightChannel = 0;
 */
+
+
+  
   private static final int kJoystickChannel = 0;
 
   private DifferentialDrive m_shooterControl;
@@ -47,6 +51,9 @@ public class Robot extends TimedRobot {
   private garbageWheel idiorWhel = new garbageWheel();
   private falcon500 falcon = new falcon500();
   private solenoidCode moverThingy = new solenoidCode();
+
+  //private final XboxController m_driverController = new XboxController(0); //THIS IS FOR IF WE USE AN XBOX CONTROLER. 
+  //BUTTONS ARENT MAPPED YET
 
 
   @Override
@@ -74,6 +81,7 @@ public class Robot extends TimedRobot {
     m_robotDrive = new MecanumDrive(frontLeftSpark, rearLeftSpark, frontRightSpark, rearRightSpark);
 
     DriveJoy = new Joystick(kJoystickChannel);
+    m_robotDrive.setDeadband(.1);
   }
 
   @Override 
@@ -85,7 +93,11 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
      
     m_robotDrive.driveCartesian(-DriveJoy.getY(), DriveJoy.getX(), DriveJoy.getZ(), 0.0);
-   // m_shooterControl.arcadeDrive(-FXNJoy.getY(), 0);
+    //m_robotDrive.driveCartesian(-m_driverController.getLeftY(), m_driverController.getLeftX(), m_driverController.getRightX());
+    //XBOX CONTROLER CODE ABOVE
+
+
+
     if (FXNJoy.getTrigger()) {
       m_shooterControl.arcadeDrive(-0.6, 0);
     } else {

@@ -27,7 +27,7 @@ public class garbageWheel extends SubsystemBase {
   private JoystickButton button9;
   private JoystickButton button10;
   private double motor9speed = 1.0;
-  private double motor10speed = 1; // We might need to change this later :)
+  private double motor10speed = .8; // We might need to change this later :)
 
   public garbageWheel() {
     motor9 = new TalonSRX(9);
@@ -43,9 +43,9 @@ public class garbageWheel extends SubsystemBase {
   public void minerMyBeloved() {
     //motor9.set(ControlMode.PercentOutput, joystick.getY());
 
-    if (button7.get()) {
+    if (button8.get()) {
       motor10.set(ControlMode.PercentOutput, motor10speed);
-    } else if (button8.get()) {
+    } else if (button7.get()) {
       motor10.set(ControlMode.PercentOutput, 0-motor10speed);
     } else {
       motor10.set(ControlMode.PercentOutput, 0.0);
