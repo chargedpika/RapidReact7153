@@ -26,17 +26,15 @@ public class solenoidCode extends SubsystemBase {
 
 
   // DoubleSolenoid corresponds to a double solenoid.
-<<<<<<< HEAD
   private final DoubleSolenoid l_doubleSolenoid = new DoubleSolenoid(2, type, 8, 9);
   private final DoubleSolenoid r_doubleSolenoid = new DoubleSolenoid(2, type, 6, 7);
-=======
+
   private final DoubleSolenoid frontRight_doubleSolenoid = new DoubleSolenoid(2, type, 9, 8);
   private final DoubleSolenoid frontLeft_doubleSolenoid = new DoubleSolenoid(2, type, 7, 6);
   private final DoubleSolenoid barGrabberLeft_doubleSolenoid = new DoubleSolenoid(2, type, 5, 4);
   private final DoubleSolenoid barGrabberRight_DoubleSolenoid = new DoubleSolenoid(2, type, 3, 2);
-  private final DoubleSolenoid whinchSolenoid = new DoubleSolenoid(2, type, 1, 0);
+  //private final DoubleSolenoid whinchSolenoid = new DoubleSolenoid(2, type, 1, 0);
 
->>>>>>> d5314a1d8b09f009b116d6813447efc9f9108197
   private final Compressor comp = new Compressor(2, type);
   //Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
@@ -50,7 +48,7 @@ public class solenoidCode extends SubsystemBase {
   //private static final int kDoubleSolenoidForward = 5;
   //private static final int kDoubleSolenoidReverse = 3;
 
-  public void amogus() {
+  public void pistonMovement() {
     /*
      * The output of GetRawButton is true/false depending on whether
      * the button is pressed; Set takes a boolean for whether
@@ -64,13 +62,11 @@ public class solenoidCode extends SubsystemBase {
      * If both are pressed, set the solenoid will be set to Forwards.
      */
     if (TURNON.get()) {
-<<<<<<< HEAD
       l_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
       r_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
     } else if (TURNOFF.get()) {
       l_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
       r_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
-=======
       frontLeft_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
       frontRight_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
     } else if (TURNOFF.get()) {
@@ -84,7 +80,6 @@ public class solenoidCode extends SubsystemBase {
     } else if (goDown.get()); {
       barGrabberRight_DoubleSolenoid.set(DoubleSolenoid.Value.kReverse);
       barGrabberLeft_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
->>>>>>> d5314a1d8b09f009b116d6813447efc9f9108197
     }
 
     if (m_stick.getTrigger()) {
