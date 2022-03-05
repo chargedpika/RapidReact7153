@@ -28,7 +28,8 @@ import frc.robot.subsystems.talonSRXwheel;
 //import frc.robot.subsystems.falcon500; //UNUSED UNTIL FURTHER NOTICE
 import frc.robot.subsystems.solenoidCode;
 //import edu.wpi.first.wpilibj.Compressor;
-//import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.subsystems.maxSpeed;
 
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -52,22 +53,23 @@ public class Robot extends TimedRobot {
   private talonSRXwheel falconCode = new talonSRXwheel();
   //private falcon500 falcon = new falcon500(); //UNUSED UNTIL FURTHER NOTICE
   private solenoidCode Solonoids = new solenoidCode();
+  private maxSpeed speedAdjust = new maxSpeed(0.3, 0.5);
 
-  
-  
-  
-  //private double startTime;
-
-  @Override
-  public void robotInit() {
-    CANSparkMax frontLeftSpark = new CANSparkMax(3, MotorType.kBrushless);
+  CANSparkMax frontLeftSpark = new CANSparkMax(3, MotorType.kBrushless);
   CANSparkMax frontRightSpark = new CANSparkMax(4, MotorType.kBrushless);
   CANSparkMax rearLeftSpark = new CANSparkMax(5, MotorType.kBrushless);
   CANSparkMax rearRightSpark = new CANSparkMax(6, MotorType.kBrushless);
- 
   CANSparkMax m_leftMotor = new CANSparkMax(7, MotorType.kBrushless);
   CANSparkMax m_rightMotor = new CANSparkMax(8, MotorType.kBrushless); 
+
     //intakeWheel intakeWheel1 = new intakeWheel(); BRO WHAT IS THIS
+
+    
+  private double startTime;
+
+  @Override
+  public void robotInit() {
+  
     
   
 
@@ -90,25 +92,19 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-  //  startTime = Timer.getFPGATimestamp();
+    startTime = Timer.getFPGATimestamp();
   }
 
   @Override
   public void autonomousPeriodic() {
-   //double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
-    //System.out.println(time - startTime);
+   double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
+    System.out.println(time - startTime);
 
-    //if (time - startTime < 3) {
-      //frontLeftSpark.set(.6);
-      //frontRightSpark.set(.6);
-      //rearLeftSpark.set(.6);
-      //rearRightSpark.set(.6);
-    //} else {
-      //frontLeftSpark.set(0);
-      //frontRightSpark.set(0);
-      //rearLeftSpark.set(0);
-      //rearRightSpark.set(0);
-    //}
+    if (time - startTime < 3) {
+      m_robotDrive.driveCartesian(-.3, 0, 0);
+    } else {
+      m_robotDrive.driveCartesian(0, 0, 0);;
+    }
   }
 
 
@@ -124,9 +120,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    speedAdjust.refresh();
      
     //m_robotDrive.driveCartesian(-DriveJoy.getY(), DriveJoy.getX(), DriveJoy.getZ(), 0.0); UNUSUED UNTIL FURTHER NOTICE
-   m_robotDrive.driveCartesian(DriveJoy.getY(), -DriveJoy.getX(), -spinJoy.getZ());
+    m_robotDrive.driveCartesian(
+      speedAdjust.applyMaxSpeed(DriveJoy.getY()),
+      speedAdjust.applyMaxSpeed(-DriveJoy.getX()), 
+      speedAdjust.applyMaxSpeed(-spinJoy.getZ())
+    );
     
 
 

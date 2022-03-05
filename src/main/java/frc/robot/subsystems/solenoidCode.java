@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.Compressor;
+//import edu.wpi.first.wpilibj.Compressor;
 //import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
@@ -17,11 +17,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class solenoidCode extends SubsystemBase {
   private final PneumaticsModuleType type = PneumaticsModuleType.REVPH; // Change this if needed :)
   
-  private final Joystick m_stick = new Joystick(2);
-  private final JoystickButton TURNON = new JoystickButton(m_stick, 3);
-  private final JoystickButton TURNOFF = new JoystickButton(m_stick, 5);
-  private final JoystickButton goUp = new JoystickButton(m_stick, 4);
-  private final JoystickButton goDown = new JoystickButton(m_stick, 6);
+  private final Joystick spinJoy = new Joystick(1);
+  private final Joystick fxnJoy = new Joystick(2);
+  private final JoystickButton TURNON = new JoystickButton(spinJoy, 3);
+  private final JoystickButton TURNOFF = new JoystickButton(spinJoy, 5);
+  private final JoystickButton goUp = new JoystickButton(fxnJoy, 4);
+  private final JoystickButton goDown = new JoystickButton(fxnJoy, 6);
   //private final JoystickButton winchUp = new JoystickButton(m_stick, )
 
 
@@ -35,7 +36,7 @@ public class solenoidCode extends SubsystemBase {
   private final DoubleSolenoid barGrabberRight_DoubleSolenoid = new DoubleSolenoid(2, type, 1, 0);
   //private final DoubleSolenoid whinchSolenoid = new DoubleSolenoid(2, type, 1, 0);
 
-  private final Compressor comp = new Compressor(2, type);
+  //private final Compressor comp = new Compressor(2, type);
   //Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
 
@@ -77,11 +78,11 @@ public class solenoidCode extends SubsystemBase {
       barGrabberLeft_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
-    if (m_stick.getTrigger()) {
+    /*if (fxnJoy.getTrigger()) {
       System.out.println(comp.getPressureSwitchValue());
       System.out.println(comp.enabled());
       comp.enableDigital();
-    }
+    }*/
     
   }
 }

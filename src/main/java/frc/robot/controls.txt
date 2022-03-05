@@ -1,0 +1,20 @@
+## CONTROLS ##
+
+Joystick 1
+X/Y: Driving
+
+Joystick 2
+Z: spin
+Button 5: Intake down/Intake wheel spin
+Button 3: Intake up/Intake wheel off
+slider: increase MAX SPEED
+
+Joystick 3:
+Trigger: Shoot
+2: Green wheel
+6: Arms up
+4: Arms down
+11: Green wheel reverse
+12: Intake wheel reverse
+
+:)

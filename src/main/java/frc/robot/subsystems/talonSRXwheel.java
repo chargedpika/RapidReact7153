@@ -21,32 +21,36 @@ public class talonSRXwheel extends SubsystemBase {
   private TalonSRX motor9;
   private TalonSRX motor10;
 
-  private Joystick joystick;
-  private JoystickButton button7;
-  private JoystickButton button8;
-  private JoystickButton button9;
-  private JoystickButton button10;
-  private double motor9speed = 1.0;
-  private double motor10speed = .8; // We might need to change this later :)
+  private Joystick spinJoy;
+  private Joystick fxnJoy;
+  private JoystickButton button2;
+  private JoystickButton button3;
+  private JoystickButton button5;
+ // private JoystickButton button11;
+ // private JoystickButton button12;
+  private double motor9speed = .6;
+  private double motor10speed = -0.8; // We might need to change this later :)
 
   public talonSRXwheel() {
     motor9 = new TalonSRX(9);
     motor10 = new TalonSRX(10);
 
-    joystick = new Joystick(2);
-    button7 = new JoystickButton(joystick, 7);
-    button8 = new JoystickButton(joystick, 8);
-    button9 = new JoystickButton(joystick, 9);
-    button10 = new JoystickButton(joystick, 10);
+    spinJoy = new Joystick(1);
+    fxnJoy = new Joystick(2);
+
+    button3 = new JoystickButton(spinJoy, 5);
+    button5 = new JoystickButton(spinJoy, 3);
+
+    button2 = new JoystickButton(fxnJoy, 2);
+    //button11 = new JoystickButton(fxnJoy, 11);
+    //button12 = new JoystickButton(fxnJoy, 12);
   }
 
   public void ballLift() {
     //motor9.set(ControlMode.PercentOutput, joystick.getY());
 
-    if (button8.get()) {
+    if (button2.get()) {
       motor10.set(ControlMode.PercentOutput, motor10speed);
-    } else if (button7.get()) {
-      motor10.set(ControlMode.PercentOutput, 0-motor10speed);
     } else {
       motor10.set(ControlMode.PercentOutput, 0.0);
     }
@@ -55,14 +59,17 @@ public class talonSRXwheel extends SubsystemBase {
   public void intakeWheel() {
    // motor9.set(ControlMode.PercentOutput, joystick.getY());
 
-    if (button9.get()) {
+    if (button3.get()) {
       motor9.set(ControlMode.PercentOutput, motor9speed);
-    } else if (button10.get()) {
-      motor9.set(ControlMode.PercentOutput, 0-motor9speed);
-    } else {
+    } else if (button5.get()) {
       motor9.set(ControlMode.PercentOutput, 0.0);
     }
+
+    // reverse
+   /* if (button11.get()) {
+      motor10.set(ControlMode.PercentOutput, -motor10speed);
+    } else {
+
+    }*/
   }
-
-
 }
