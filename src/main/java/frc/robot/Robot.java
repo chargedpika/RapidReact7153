@@ -25,10 +25,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.subsystems.talonSRXwheel;
-import frc.robot.subsystems.falcon500;
+//import frc.robot.subsystems.falcon500; //UNUSED UNTIL FURTHER NOTICE
 import frc.robot.subsystems.solenoidCode;
 //import edu.wpi.first.wpilibj.Compressor;
-//import edu.wpi.first.wpilibj.XboxController; //harmless potential import
 //import edu.wpi.first.wpilibj.Timer;
 
 
@@ -51,11 +50,9 @@ public class Robot extends TimedRobot {
   private MecanumDrive m_robotDrive;
   private static Joystick DriveJoy = new Joystick(0), spinJoy = new Joystick(1), FXNJoy = new Joystick(2);
   private talonSRXwheel falconCode = new talonSRXwheel();
-  private falcon500 falcon = new falcon500();
+  //private falcon500 falcon = new falcon500(); //UNUSED UNTIL FURTHER NOTICE
   private solenoidCode Solonoids = new solenoidCode();
 
-  //private final XboxController m_driverController = new XboxController(0); //THIS IS FOR IF WE USE AN XBOX CONTROLER. 
-  //BUTTONS ARENT MAPPED YET
   
   
   
@@ -70,7 +67,7 @@ public class Robot extends TimedRobot {
  
   CANSparkMax m_leftMotor = new CANSparkMax(7, MotorType.kBrushless);
   CANSparkMax m_rightMotor = new CANSparkMax(8, MotorType.kBrushless); 
-    //intakeWheel intakeWheel1 = new intakeWheel();
+    //intakeWheel intakeWheel1 = new intakeWheel(); BRO WHAT IS THIS
     
   
 
@@ -98,7 +95,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-   //double time = Timer.getFPGATimestamp();
+   //double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
     //System.out.println(time - startTime);
 
     //if (time - startTime < 3) {
@@ -120,7 +117,7 @@ public class Robot extends TimedRobot {
     Solonoids.teleopStarted();
   }
 
-  //public double getJoystickValue(Joystick joystick) {
+  //public double getJoystickValue(Joystick joystick) {  //DEADBAND FOR USE LATER!!!!!!!!!!!
     //  if(Math.abs(joystick.getValue() < 0.1)) return 0;
     //  else return joystick.getValue();
  // }
@@ -128,21 +125,21 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
      
-    //m_robotDrive.driveCartesian(-DriveJoy.getY(), DriveJoy.getX(), DriveJoy.getZ(), 0.0);
+    //m_robotDrive.driveCartesian(-DriveJoy.getY(), DriveJoy.getX(), DriveJoy.getZ(), 0.0); UNUSUED UNTIL FURTHER NOTICE
    m_robotDrive.driveCartesian(DriveJoy.getY(), -DriveJoy.getX(), -spinJoy.getZ());
-    //m_robotDrive.driveCartesian(-m_driverController.getLeftY(), m_driverController.getLeftX(), m_driverController.getRightX());
-    //XBOX CONTROLER CODE ABOVE
+    
 
 
 
     if (FXNJoy.getTrigger()) {
-      m_shooterControl.arcadeDrive(-0.6, 0);
+      m_shooterControl.arcadeDrive(-0.7, 0);
     } else {
       m_shooterControl.arcadeDrive(0, 0);
     }
     falconCode.ballLift();
-    //falcon.move(); unused until further notice.
+    //falcon.move(); //UNUSED UNTIL FURTHER NOTICE
     Solonoids.pistonMovement(); 
     falconCode.intakeWheel();
     }
 }
+//           :)

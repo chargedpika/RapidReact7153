@@ -11,8 +11,8 @@ public class talonSRXCommand extends CommandBase {
 
   public talonSRXCommand(int id, Double p) {
     System.out.println("#2 ran :)");
-   TalonSRX wheel = new TalonSRX(id);
-    percent = p;
+   TalonSRX wheel = new TalonSRX(id);             rest in peace talonSRX command
+    percent = p;                                  alas, we hardly used ye
   }
 
   @Override
