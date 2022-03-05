@@ -49,7 +49,7 @@ public class Robot extends TimedRobot {
 
   private DifferentialDrive m_shooterControl;
   private MecanumDrive m_robotDrive;
-  private static Joystick DriveJoy = new Joystick(0), FXNJoy = new Joystick(1);
+  private static Joystick DriveJoy = new Joystick(0), spinJoy = new Joystick(1), FXNJoy = new Joystick(2);
   private talonSRXwheel falconCode = new talonSRXwheel();
   private falcon500 falcon = new falcon500();
   private solenoidCode Solonoids = new solenoidCode();
@@ -77,11 +77,11 @@ public class Robot extends TimedRobot {
     CameraServer.startAutomaticCapture();
   
 
-    // Invert the right side motors.
     // You may need to change or remove this to match your robot.
-    frontRightSpark.setInverted(false);
-    rearRightSpark.setInverted(false); 
-    m_rightMotor.setInverted(true);
+    rearRightSpark.setInverted(true);
+    frontRightSpark.setInverted(true);
+
+    m_rightMotor.setInverted(true); //THIS IS FOR THE SHOOTER
 
     m_robotDrive = new MecanumDrive(frontLeftSpark, rearLeftSpark, frontRightSpark, rearRightSpark);
     m_shooterControl = new DifferentialDrive(m_leftMotor, m_rightMotor);
@@ -98,7 +98,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-   // double time = Timer.getFPGATimestamp();
+   //double time = Timer.getFPGATimestamp();
     //System.out.println(time - startTime);
 
     //if (time - startTime < 3) {
@@ -121,14 +121,15 @@ public class Robot extends TimedRobot {
   }
 
   //public double getJoystickValue(Joystick joystick) {
-     // if(Math.abs(joystick.getValue() < 0.1)) return 0;
-      //else return joystick.getValue();
-  //}
+    //  if(Math.abs(joystick.getValue() < 0.1)) return 0;
+    //  else return joystick.getValue();
+ // }
 
   @Override
   public void teleopPeriodic() {
      
-    m_robotDrive.driveCartesian(-DriveJoy.getY(), DriveJoy.getX(), DriveJoy.getZ(), 0.0);
+    //m_robotDrive.driveCartesian(-DriveJoy.getY(), DriveJoy.getX(), DriveJoy.getZ(), 0.0);
+   m_robotDrive.driveCartesian(DriveJoy.getY(), -DriveJoy.getX(), -spinJoy.getZ());
     //m_robotDrive.driveCartesian(-m_driverController.getLeftY(), m_driverController.getLeftX(), m_driverController.getRightX());
     //XBOX CONTROLER CODE ABOVE
 
@@ -139,7 +140,7 @@ public class Robot extends TimedRobot {
     } else {
       m_shooterControl.arcadeDrive(0, 0);
     }
-    falconCode.ballLift(); // ignore this pls
+    falconCode.ballLift();
     //falcon.move(); unused until further notice.
     Solonoids.pistonMovement(); 
     falconCode.intakeWheel();

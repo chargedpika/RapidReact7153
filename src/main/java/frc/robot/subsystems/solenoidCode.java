@@ -26,13 +26,13 @@ public class solenoidCode extends SubsystemBase {
 
 
   // DoubleSolenoid corresponds to a double solenoid.
-  private final DoubleSolenoid l_doubleSolenoid = new DoubleSolenoid(2, type, 8, 9);
-  private final DoubleSolenoid r_doubleSolenoid = new DoubleSolenoid(2, type, 6, 7);
+  //private final DoubleSolenoid l_doubleSolenoid = new DoubleSolenoid(2, type, 8, 9);
+  //private final DoubleSolenoid r_doubleSolenoid = new DoubleSolenoid(2, type, 6, 7);
 
   private final DoubleSolenoid frontRight_doubleSolenoid = new DoubleSolenoid(2, type, 9, 8);
   private final DoubleSolenoid frontLeft_doubleSolenoid = new DoubleSolenoid(2, type, 7, 6);
-  private final DoubleSolenoid barGrabberLeft_doubleSolenoid = new DoubleSolenoid(2, type, 5, 4);
-  private final DoubleSolenoid barGrabberRight_DoubleSolenoid = new DoubleSolenoid(2, type, 3, 2);
+  private final DoubleSolenoid barGrabberLeft_doubleSolenoid = new DoubleSolenoid(2, type, 3, 2);
+  private final DoubleSolenoid barGrabberRight_DoubleSolenoid = new DoubleSolenoid(2, type, 1, 0);
   //private final DoubleSolenoid whinchSolenoid = new DoubleSolenoid(2, type, 1, 0);
 
   private final Compressor comp = new Compressor(2, type);
@@ -62,11 +62,6 @@ public class solenoidCode extends SubsystemBase {
      * If both are pressed, set the solenoid will be set to Forwards.
      */
     if (TURNON.get()) {
-      l_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
-      r_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
-    } else if (TURNOFF.get()) {
-      l_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
-      r_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
       frontLeft_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
       frontRight_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
     } else if (TURNOFF.get()) {
@@ -77,7 +72,7 @@ public class solenoidCode extends SubsystemBase {
     if (goUp.get()) {
       barGrabberLeft_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
       barGrabberRight_DoubleSolenoid.set(DoubleSolenoid.Value.kForward);
-    } else if (goDown.get()); {
+    } else if (goDown.get()) {
       barGrabberRight_DoubleSolenoid.set(DoubleSolenoid.Value.kReverse);
       barGrabberLeft_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
