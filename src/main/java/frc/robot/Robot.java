@@ -20,6 +20,9 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 //import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -30,6 +33,7 @@ import frc.robot.subsystems.solenoidCode;
 //import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.maxSpeed;
+import frc.robot.subsystems.THEGYRO;
 
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -54,6 +58,8 @@ public class Robot extends TimedRobot {
   //private falcon500 falcon = new falcon500(); //UNUSED UNTIL FURTHER NOTICE
   private solenoidCode Solonoids = new solenoidCode();
   private maxSpeed speedAdjust = new maxSpeed(0.3, 0.5);
+  
+  private THEGYRO gyro = new THEGYRO();
 
   CANSparkMax frontLeftSpark = new CANSparkMax(3, MotorType.kBrushless);
   CANSparkMax frontRightSpark = new CANSparkMax(4, MotorType.kBrushless);
@@ -70,9 +76,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
   
-    
-  
-
     CameraServer.startAutomaticCapture();
   
 
@@ -98,7 +101,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
    double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
-    System.out.println(time - startTime);
+    //System.out.println(time - startTime);
+    SmartDashboard.putNumber("Auto Timer", time-startTime);
 
     if (time - startTime < 3) {
       m_robotDrive.driveCartesian(-.3, 0, 0);
@@ -126,7 +130,8 @@ public class Robot extends TimedRobot {
     m_robotDrive.driveCartesian(
       speedAdjust.applyMaxSpeed(DriveJoy.getY()),
       speedAdjust.applyMaxSpeed(-DriveJoy.getX()), 
-      speedAdjust.applyMaxSpeed(-spinJoy.getZ())
+      speedAdjust.applyMaxSpeed(-spinJoy.getZ()),
+      gyro.getGyro()
     );
     
 

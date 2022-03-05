@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class maxSpeed {
     public double maxSpeedLow;
@@ -25,5 +26,7 @@ public class maxSpeed {
         } else {
             currentMax = maxSpeedHigh;
         }
+        SmartDashboard.putNumber("Max Speed", currentMax);
+        SmartDashboard.putNumber("Joystick 2 Throttle", joy.getThrottle());
     }
 }
