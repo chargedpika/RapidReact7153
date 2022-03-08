@@ -3,16 +3,13 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax.ControlType;
 
 public class encoder {
-    private CANSparkMax motor;
     private RelativeEncoder relative;
     private SparkMaxPIDController pidController;
 
-    public encoder(int canId) {
-        motor = new CANSparkMax(canId, MotorType.kBrushless);
+    public encoder(CANSparkMax motor) {
         relative = motor.getEncoder();
         pidController = motor.getPIDController();
 

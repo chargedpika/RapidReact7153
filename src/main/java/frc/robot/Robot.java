@@ -36,6 +36,7 @@ import frc.robot.subsystems.maxSpeed;
 import com.revrobotics.RelativeEncoder;
 //import frc.robot.subsystems.THEGYRO;
 
+import frc.robot.subsystems.encoder;
 
 import edu.wpi.first.cameraserver.CameraServer;
 
@@ -69,7 +70,11 @@ public class Robot extends TimedRobot {
   CANSparkMax m_leftMotor = new CANSparkMax(7, MotorType.kBrushless);
   CANSparkMax m_rightMotor = new CANSparkMax(8, MotorType.kBrushless);
 
-  RelativeEncoder frontLeftEncoder = frontLeftSpark.getEncoder();
+  //RelativeEncoder frontLeftEncoder = frontLeftSpark.getEncoder();
+  encoder frontLeftEncoder = new encoder(frontLeftSpark);
+  encoder frontRightEncoder = new encoder(frontRightSpark);
+  encoder rearLeftEncoder = new encoder(rearLeftSpark);
+  encoder rearRightEncoder = new encoder(rearRightSpark);
 
     //intakeWheel intakeWheel1 = new intakeWheel(); BRO WHAT IS THIS
 
@@ -103,7 +108,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-   double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
+   /*double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
     //System.out.println(time - startTime);
     SmartDashboard.putNumber("Auto Timer", time-startTime);
 
@@ -111,7 +116,11 @@ public class Robot extends TimedRobot {
       m_robotDrive.driveCartesian(-.3, 0, 0);
     } else {
       m_robotDrive.driveCartesian(0, 0, 0);;
-    }
+    }*/
+    frontLeftEncoder.go(5);
+    frontRightEncoder.go(5);
+    rearLeftEncoder.go(5);
+    rearRightEncoder.go(5);
   }
 
   @Override 
