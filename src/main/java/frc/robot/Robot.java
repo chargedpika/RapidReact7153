@@ -117,10 +117,10 @@ public class Robot extends TimedRobot {
     } else {
       m_robotDrive.driveCartesian(0, 0, 0);;
     }*/
-    frontLeftEncoder.go(5);
-    frontRightEncoder.go(5);
-    rearLeftEncoder.go(5);
-    rearRightEncoder.go(5);
+    frontLeftEncoder.go(10);
+    frontRightEncoder.go(10);
+    rearLeftEncoder.go(10);
+    rearRightEncoder.go(10);
   }
 
   @Override 
