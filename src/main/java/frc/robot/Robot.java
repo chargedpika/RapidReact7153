@@ -33,7 +33,8 @@ import frc.robot.subsystems.solenoidCode;
 //import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.maxSpeed;
-import frc.robot.subsystems.THEGYRO;
+import com.revrobotics.RelativeEncoder;
+//import frc.robot.subsystems.THEGYRO;
 
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -59,14 +60,16 @@ public class Robot extends TimedRobot {
   private solenoidCode Solonoids = new solenoidCode();
   private maxSpeed speedAdjust = new maxSpeed(0.3, 0.5);
   
-  private THEGYRO gyro = new THEGYRO();
+  //private THEGYRO gyro = new THEGYRO();
 
   CANSparkMax frontLeftSpark = new CANSparkMax(3, MotorType.kBrushless);
   CANSparkMax frontRightSpark = new CANSparkMax(4, MotorType.kBrushless);
   CANSparkMax rearLeftSpark = new CANSparkMax(5, MotorType.kBrushless);
   CANSparkMax rearRightSpark = new CANSparkMax(6, MotorType.kBrushless);
   CANSparkMax m_leftMotor = new CANSparkMax(7, MotorType.kBrushless);
-  CANSparkMax m_rightMotor = new CANSparkMax(8, MotorType.kBrushless); 
+  CANSparkMax m_rightMotor = new CANSparkMax(8, MotorType.kBrushless);
+
+  RelativeEncoder frontLeftEncoder = frontLeftSpark.getEncoder();
 
     //intakeWheel intakeWheel1 = new intakeWheel(); BRO WHAT IS THIS
 
@@ -113,7 +116,7 @@ public class Robot extends TimedRobot {
 
   @Override 
   public void teleopInit() {
-    Solonoids.teleopStarted();
+    //Solonoids.teleopStarted();
   }
 
   //public double getJoystickValue(Joystick joystick) {  //DEADBAND FOR USE LATER!!!!!!!!!!!
@@ -129,8 +132,8 @@ public class Robot extends TimedRobot {
     m_robotDrive.driveCartesian(
       speedAdjust.applyMaxSpeed(DriveJoy.getY()),
       speedAdjust.applyMaxSpeed(-DriveJoy.getX()), 
-      speedAdjust.applyMaxSpeed(-spinJoy.getZ()),
-      gyro.getGyro()
+      speedAdjust.applyMaxSpeed(-spinJoy.getZ())
+      //gyro.getGyro()
     );
     
 
