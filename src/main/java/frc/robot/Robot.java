@@ -108,19 +108,19 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-   /*double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
+   double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
     //System.out.println(time - startTime);
     SmartDashboard.putNumber("Auto Timer", time-startTime);
 
     if (time - startTime < 3) {
       m_robotDrive.driveCartesian(-.3, 0, 0);
     } else {
-      m_robotDrive.driveCartesian(0, 0, 0);;
-    }*/
-    frontLeftEncoder.go(10);
-    frontRightEncoder.go(10);
-    rearLeftEncoder.go(10);
-    rearRightEncoder.go(10);
+      m_robotDrive.driveCartesian(0, 0, 0);
+    }
+    /*frontLeftEncoder.go(4);
+    frontRightEncoder.go(4);
+    rearLeftEncoder.go(4);
+    rearRightEncoder.go(4);*/
   }
 
   @Override 

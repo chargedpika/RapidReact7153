@@ -38,8 +38,8 @@ public class talonSRXwheel extends SubsystemBase {
     spinJoy = new Joystick(1);
     fxnJoy = new Joystick(2);
 
-    button3 = new JoystickButton(spinJoy, 5);
-    button5 = new JoystickButton(spinJoy, 3);
+    button3 = new JoystickButton(fxnJoy, 5);
+    button5 = new JoystickButton(fxnJoy, 3);
 
     button2 = new JoystickButton(fxnJoy, 2);
     //button11 = new JoystickButton(fxnJoy, 11);

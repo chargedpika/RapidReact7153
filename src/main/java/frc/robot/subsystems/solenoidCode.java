@@ -19,8 +19,8 @@ public class solenoidCode extends SubsystemBase {
   
   private final Joystick spinJoy = new Joystick(1);
   private final Joystick fxnJoy = new Joystick(2);
-  private final JoystickButton TURNON = new JoystickButton(spinJoy, 3);
-  private final JoystickButton TURNOFF = new JoystickButton(spinJoy, 5);
+  private final JoystickButton TURNON = new JoystickButton(fxnJoy, 3);
+  private final JoystickButton TURNOFF = new JoystickButton(fxnJoy, 5);
   private final JoystickButton goUp = new JoystickButton(fxnJoy, 4);
   private final JoystickButton goDown = new JoystickButton(fxnJoy, 6);
   //private final JoystickButton winchUp = new JoystickButton(m_stick, )

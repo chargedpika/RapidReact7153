@@ -20,7 +20,7 @@ public class encoder {
         pidController.setIZone(0);
         pidController.setFF(0);
 
-        pidController.setOutputRange(-1, 1); // Motor range
+        pidController.setOutputRange(-0.3, 0.3); // Motor range
     }
 
     public double go(double rotations) {
