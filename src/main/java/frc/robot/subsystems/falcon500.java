@@ -13,7 +13,7 @@ public class falcon500 extends SubsystemBase {
     private Joystick joystick;
    // private JoystickButton button2; // NOT USED, INDEXER IS ON SHOOTER NOW
     private JoystickButton button11;
-    private double motorSpeed = .2;
+    private double motorSpeed = .5;
     
     
 
@@ -28,10 +28,10 @@ public class falcon500 extends SubsystemBase {
     // NEW FALCON FX MOVEFORWARD
     public void move() {
                 if (joystick.getTrigger()) {
-                  try {Thread.sleep(3000);
+                  //try {Thread.sleep(3000);
                       
-                  } catch (InterruptedException ex) {
-                  }  
+                  //} catch (InterruptedException ex) {
+                  //}  
                     motor.set(ControlMode.PercentOutput, motorSpeed);
           } else {
             motor.set(ControlMode.PercentOutput, 0.0);
