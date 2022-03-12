@@ -1,3 +1,4 @@
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -26,50 +27,52 @@ public class talonSRXwheel extends SubsystemBase {
   private JoystickButton button2;
   private JoystickButton button3;
   private JoystickButton button5;
- // private JoystickButton button11;
- // private JoystickButton button12;
+  private JoystickButton button11;
+  private JoystickButton button12;
   private double motor9speed = .6;
-  private double motor10speed = -0.8; // We might need to change this later :)
+  //private double motor10speed = -0.8; // We might need to change this later :)
 
   public talonSRXwheel() {
     motor9 = new TalonSRX(9);
-    motor10 = new TalonSRX(10);
+    //motor10 = new TalonSRX(10);
 
     spinJoy = new Joystick(1);
     fxnJoy = new Joystick(2);
 
-    button3 = new JoystickButton(fxnJoy, 5);
-    button5 = new JoystickButton(fxnJoy, 3);
+    button3 = new JoystickButton(spinJoy, 5);
+    button5 = new JoystickButton(spinJoy, 3);
 
     button2 = new JoystickButton(fxnJoy, 2);
-    //button11 = new JoystickButton(fxnJoy, 11);
-    //button12 = new JoystickButton(fxnJoy, 12);
+    button11 = new JoystickButton(fxnJoy, 11);
+    button12 = new JoystickButton(fxnJoy, 12);
   }
 
   public void ballLift() {
     //motor9.set(ControlMode.PercentOutput, joystick.getY());
 
-    if (button2.get()) {
-      motor10.set(ControlMode.PercentOutput, motor10speed);
-    } else {
-      motor10.set(ControlMode.PercentOutput, 0.0);
-    }
-  }
+    
+    //if (button2.get()) {
+     // motor10.set(ControlMode.PercentOutput, motor10speed);
+   // } else {
+     // motor10.set(ControlMode.PercentOutput, 0.0);
+    //}
+  
 
-  public void intakeWheel() {
+ // public void intakeWheel() {
    // motor9.set(ControlMode.PercentOutput, joystick.getY());
 
+   //INTAKE!!! IF YOU REMAP THIS, REMAP THE PISTON TOO
     if (button3.get()) {
       motor9.set(ControlMode.PercentOutput, motor9speed);
     } else if (button5.get()) {
       motor9.set(ControlMode.PercentOutput, 0.0);
     }
 
-    // reverse
-   /* if (button11.get()) {
-      motor10.set(ControlMode.PercentOutput, -motor10speed);
-    } else {
 
-    }*/
+      {
+
+      
+
+    }
   }
 }

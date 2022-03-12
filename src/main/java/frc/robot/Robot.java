@@ -35,9 +35,10 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.maxSpeed;
 import com.revrobotics.RelativeEncoder;
 //import frc.robot.subsystems.THEGYRO;
+//import frc.robot.subsystems.*;
 
 import frc.robot.subsystems.encoder;
-
+import frc.robot.subsystems.falcon500;
 import edu.wpi.first.cameraserver.CameraServer;
 
 
@@ -57,8 +58,8 @@ public class Robot extends TimedRobot {
   private MecanumDrive m_robotDrive;
   private static Joystick DriveJoy = new Joystick(0), spinJoy = new Joystick(1), FXNJoy = new Joystick(2);
   private talonSRXwheel falconCode = new talonSRXwheel();
-  //private falcon500 falcon = new falcon500(); //UNUSED UNTIL FURTHER NOTICE
   private solenoidCode Solonoids = new solenoidCode();
+  private falcon500 FALCONCODE = new falcon500();
   private maxSpeed speedAdjust = new maxSpeed(0.3, 0.5);
   
   //private THEGYRO gyro = new THEGYRO();
@@ -71,11 +72,12 @@ public class Robot extends TimedRobot {
   CANSparkMax m_rightMotor = new CANSparkMax(8, MotorType.kBrushless);
 
   //RelativeEncoder frontLeftEncoder = frontLeftSpark.getEncoder();
+  /*
   encoder frontLeftEncoder = new encoder(frontLeftSpark);
   encoder frontRightEncoder = new encoder(frontRightSpark);
   encoder rearLeftEncoder = new encoder(rearLeftSpark);
   encoder rearRightEncoder = new encoder(rearRightSpark);
-
+*/
     //intakeWheel intakeWheel1 = new intakeWheel(); BRO WHAT IS THIS
 
     
@@ -149,14 +151,14 @@ public class Robot extends TimedRobot {
 
 
     if (FXNJoy.getTrigger()) {
-      m_shooterControl.arcadeDrive(-0.7, 0);
+      m_shooterControl.arcadeDrive(-0.6, 0);
     } else {
       m_shooterControl.arcadeDrive(0, 0);
     }
-    falconCode.ballLift();
-    //falcon.move(); //UNUSED UNTIL FURTHER NOTICE
+    //falconCode.ballLift();
+    FALCONCODE.move(); //NOW BEING USED 
     Solonoids.pistonMovement(); 
-    falconCode.intakeWheel();
+    //falconCode.intakeWheel();
     }
 }
-//           :)
+//           :) (: 
