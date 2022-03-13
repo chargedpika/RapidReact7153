@@ -151,14 +151,14 @@ public class Robot extends TimedRobot {
 
 
     if (FXNJoy.getTrigger()) {
-      m_shooterControl.arcadeDrive(-0.6, 0);
+      m_shooterControl.arcadeDrive(-0.7, 0);
     } else {
       m_shooterControl.arcadeDrive(0, 0);
     }
     //falconCode.ballLift();
     FALCONCODE.move(); //NOW BEING USED 
     Solonoids.pistonMovement(); 
-    //falconCode.intakeWheel();
+    falconCode.intakeWheel();
     }
 }
 //           :) (: 

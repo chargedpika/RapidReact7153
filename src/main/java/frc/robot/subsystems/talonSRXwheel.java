@@ -29,7 +29,7 @@ public class talonSRXwheel extends SubsystemBase {
   private JoystickButton button5;
   private JoystickButton button11;
   private JoystickButton button12;
-  private double motor9speed = .6;
+  private double motor9speed = .5;
   //private double motor10speed = -0.8; // We might need to change this later :)
 
   public talonSRXwheel() {
@@ -39,15 +39,15 @@ public class talonSRXwheel extends SubsystemBase {
     spinJoy = new Joystick(1);
     fxnJoy = new Joystick(2);
 
-    button3 = new JoystickButton(spinJoy, 5);
     button5 = new JoystickButton(spinJoy, 3);
+    button3 = new JoystickButton(spinJoy, 5);
 
     button2 = new JoystickButton(fxnJoy, 2);
     button11 = new JoystickButton(fxnJoy, 11);
     button12 = new JoystickButton(fxnJoy, 12);
   }
 
-  public void ballLift() {
+  //public void ballLift() {
     //motor9.set(ControlMode.PercentOutput, joystick.getY());
 
     
@@ -58,7 +58,7 @@ public class talonSRXwheel extends SubsystemBase {
     //}
   
 
- // public void intakeWheel() {
+ public void intakeWheel() {
    // motor9.set(ControlMode.PercentOutput, joystick.getY());
 
    //INTAKE!!! IF YOU REMAP THIS, REMAP THE PISTON TOO
@@ -74,5 +74,4 @@ public class talonSRXwheel extends SubsystemBase {
       
 
     }
-  }
-}
+  }}
