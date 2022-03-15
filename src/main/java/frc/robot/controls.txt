@@ -10,7 +10,7 @@ Button 3: Intake up/Intake wheel off
 slider: increase MAX SPEED
 
 Joystick 3:
-Trigger: Shoot
+Trigger: Shooter / indexer
 2: Green wheel
 6: Arms up
 4: Arms down

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 */
 //import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -35,10 +36,24 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.maxSpeed;
 import com.revrobotics.RelativeEncoder;
 //import frc.robot.subsystems.THEGYRO;
-
 import frc.robot.subsystems.encoder;
-
 import edu.wpi.first.cameraserver.CameraServer;
+
+import org.opencv.core.Rect;
+import org.opencv.imgproc.Imgproc;
+
+import frc.robot.visionFile;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+//import edu.wpi.first.wpilibj.PWMSparkMax;
+//import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.vision.VisionRunner;
+import edu.wpi.first.vision.VisionThread;
+import org.opencv.core.*;
+
+import frc.robot.FindRedAreasTwo;
+
 
 
 /** This is a demo program showing how to use Mecanum control with the MecanumDrive class. */
@@ -47,7 +62,23 @@ public class Robot extends TimedRobot {
   private static final int kRearLeftChannel = 3;
   private static final int kFrontRightChannel = 1;
   private static final int kRearRightChannel = 0;
+  
 */
+
+//////////////////////////////////////
+private static final int IMG_WIDTH = 320;
+    private static final int IMG_HEIGHT = 240;
+
+    private VisionThread visionThread;
+    private double centerX = 0.0;
+    //private DifferentialDrive drive;
+    //private PWMSparkMax left;
+    //private PWMSparkMax right;
+
+    private final Object imgLock = new Object();
+
+    /////////////////////////////////////////
+
 
 
   
@@ -60,6 +91,7 @@ public class Robot extends TimedRobot {
   //private falcon500 falcon = new falcon500(); //UNUSED UNTIL FURTHER NOTICE
   private solenoidCode Solonoids = new solenoidCode();
   private maxSpeed speedAdjust = new maxSpeed(0.3, 0.5);
+  private visionFile images = new visionFile();
   
   //private THEGYRO gyro = new THEGYRO();
 
@@ -83,8 +115,51 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+
+    /////////////////////////////////////////////////////
+
+    UsbCamera camera = CameraServer.startAutomaticCapture();
+    camera.setResolution(IMG_WIDTH, IMG_HEIGHT);
+
+    //final visionFile images = new visionFile();
+
+    /*
+   * Creates a new vision thread that continuously runs the given vision pipeline. This is
+   * equivalent to {@code new VisionThread(new VisionRunner<>(videoSource, pipeline, listener))}.
+   *
+   * @param videoSource the source for images the pipeline should process
+   * @param pipeline the pipeline to run
+   * @param listener the listener to copy outputs from the pipeline after it runs
+   * @param <P> the type of the pipeline
+   *
+  public <P extends VisionPipeline> VisionThread(
+    VideoSource videoSource, P pipeline, VisionRunner.Listener<? super P> listener) {
+  this(new VisionRunner<>(videoSource, pipeline, listener));
+}*/
+
+    visionThread = new VisionThread(
+      camera, 
+      new FindRedAreasTwo(), 
+      pipeline -> {
+        if (!pipeline.filterContoursOutput().isEmpty()) {
+            Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
+            synchronized (imgLock) {
+                centerX = r.x + (r.width / 2);
+                System.out.println("Red cargo is at x position " + centerX);
+                SmartDashboard.putNumber("Red Cargo Position", centerX);
+            }
+        }
+    }
+    ) ;
+     
+    visionThread.start();
+
+
+
+    /////////////////////////////////////////////////////
+
   
-    CameraServer.startAutomaticCapture();
+    //CameraServer.startAutomaticCapture();
   
 
     // You may need to change or remove this to match your robot.
@@ -108,6 +183,22 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
+
+    /////////////////////////////////////////////////////////////
+
+    double centerX;
+    synchronized (imgLock) {
+        centerX = this.centerX;
+    }
+    double turn = centerX - (IMG_WIDTH / 2);
+    m_robotDrive.driveCartesian(-0.6, 0, turn * 0.005);
+
+
+
+    /////////////////////////////////////////////////////////////
+
+
+
    double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
     //System.out.println(time - startTime);
     SmartDashboard.putNumber("Auto Timer", time-startTime);
@@ -157,6 +248,7 @@ public class Robot extends TimedRobot {
     //falcon.move(); //UNUSED UNTIL FURTHER NOTICE
     Solonoids.pistonMovement(); 
     falconCode.intakeWheel();
+    //images.process(source0);
     }
 }
 //           :)

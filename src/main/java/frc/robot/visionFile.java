@@ -1,4 +1,4 @@
-package librarygriptestred;
+package frc.robot;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -11,10 +11,14 @@ import java.util.HashMap;
 
 import org.opencv.core.*;
 import org.opencv.core.Core.*;
-import org.opencv.features2d.FeatureDetector;
+import org.opencv.features2d.Feature2D;
+import org.opencv.features2d.Features2d;
+import org.opencv.features2d.SimpleBlobDetector;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.*;
 import org.opencv.objdetect.*;
+
+import edu.wpi.first.vision.VisionPipeline;
 
 /**
 *  class.
@@ -23,7 +27,7 @@ import org.opencv.objdetect.*;
 *
 * @author GRIP
 */
-public class  {
+public class visionFile implements VisionPipeline {
 
 	//Outputs
 	private Mat blurOutput = new Mat();
@@ -40,7 +44,7 @@ public class  {
 	 * This is the primary method that runs the entire pipeline and updates the outputs.
 	 */
 	public void process(Mat source0) {
-		// Step Blur0:
+	    // Step Blur0:
 		Mat blurInput = source0;
 		BlurType blurType = BlurType.get("Gaussian Blur");
 		double blurRadius = 10.0;
@@ -244,7 +248,7 @@ public class  {
 	 */
 	private void findBlobs(Mat input, double minArea, double[] circularity,
 		Boolean darkBlobs, MatOfKeyPoint blobList) {
-		FeatureDetector blobDet = FeatureDetector.create(FeatureDetector.SIMPLEBLOB);
+		Feature2D blobDet = SimpleBlobDetector.create();
 		try {
 			File tempFile = File.createTempFile("config", ".xml");
 
