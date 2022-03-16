@@ -39,8 +39,8 @@ public class talonSRXwheel extends SubsystemBase {
     spinJoy = new Joystick(1);
     fxnJoy = new Joystick(2);
 
-    button5 = new JoystickButton(spinJoy, 3);
-    button3 = new JoystickButton(spinJoy, 5);
+    //button5 = new JoystickButton(spinJoy, 3);
+    //button3 = new JoystickButton(spinJoy, 5);
 
     button2 = new JoystickButton(fxnJoy, 2);
     button11 = new JoystickButton(fxnJoy, 11);
@@ -62,16 +62,9 @@ public class talonSRXwheel extends SubsystemBase {
    // motor9.set(ControlMode.PercentOutput, joystick.getY());
 
    //INTAKE!!! IF YOU REMAP THIS, REMAP THE PISTON TOO
-    if (button3.get()) {
+    if (spinJoy.getTrigger()) {
       motor9.set(ControlMode.PercentOutput, motor9speed);
-    } else if (button5.get()) {
+    } else {
       motor9.set(ControlMode.PercentOutput, 0.0);
-    }
-
-
-      {
-
-      
-
     }
   }}

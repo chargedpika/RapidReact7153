@@ -130,11 +130,6 @@ public class Robot extends TimedRobot {
     //Solonoids.teleopStarted();
   }
 
-  //public double getJoystickValue(Joystick joystick) {  //DEADBAND FOR USE LATER!!!!!!!!!!!
-    //  if(Math.abs(joystick.getValue() < 0.1)) return 0;
-    //  else return joystick.getValue();
- // }
-
   @Override
   public void teleopPeriodic() {
     speedAdjust.refresh();
@@ -144,11 +139,8 @@ public class Robot extends TimedRobot {
       speedAdjust.applyMaxSpeed(DriveJoy.getY()),
       speedAdjust.applyMaxSpeed(-DriveJoy.getX()), 
       speedAdjust.applyMaxSpeed(-spinJoy.getZ())
-      //gyro.getGyro()
     );
     
-
-
 
     if (FXNJoy.getTrigger()) {
       m_shooterControl.arcadeDrive(-0.7, 0);
