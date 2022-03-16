@@ -7,10 +7,11 @@ public class maxSpeed {
     public double maxSpeedLow;
     public double maxSpeedHigh;
 
-    private double currentMax;
-    private Joystick joy = new Joystick(1);
+    public double currentMax;
+    private Joystick joy;
 
-    public maxSpeed(double min, double max) {
+    public maxSpeed(int joyId, double min, double max) {
+        joy = new Joystick(joyId);
         maxSpeedLow = min;
         maxSpeedHigh = max;
         currentMax = min;

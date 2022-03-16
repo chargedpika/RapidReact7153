@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 public class falcon500 extends SubsystemBase {
-    private TalonFX motor;
+    public static TalonFX motor;
     private Joystick joystick;
    // private JoystickButton button2; // NOT USED, INDEXER IS ON SHOOTER NOW
     private JoystickButton button11;

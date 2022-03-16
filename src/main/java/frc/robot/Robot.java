@@ -39,6 +39,7 @@ import com.revrobotics.RelativeEncoder;
 
 import frc.robot.subsystems.encoder;
 import frc.robot.subsystems.falcon500;
+import frc.robot.subsystems.auto;
 import edu.wpi.first.cameraserver.CameraServer;
 
 
@@ -56,6 +57,7 @@ public class Robot extends TimedRobot {
 
   private DifferentialDrive m_shooterControl;
   private MecanumDrive m_robotDrive;
+  private auto autoControl;
   private static Joystick DriveJoy = new Joystick(0), spinJoy = new Joystick(1), FXNJoy = new Joystick(2);
   private talonSRXwheel falconCode = new talonSRXwheel();
   private solenoidCode Solonoids = new solenoidCode();
@@ -98,6 +100,11 @@ public class Robot extends TimedRobot {
 
     m_robotDrive = new MecanumDrive(frontLeftSpark, rearLeftSpark, frontRightSpark, rearRightSpark);
     m_shooterControl = new DifferentialDrive(m_leftMotor, m_rightMotor);
+    autoControl = new auto(
+      m_shooterControl,
+      falcon500.motor,
+      m_robotDrive
+    );
 
 
     DriveJoy = new Joystick(kJoystickChannel);
@@ -107,11 +114,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     startTime = Timer.getFPGATimestamp();
+    autoControl.autoStart();
   }
 
   @Override
   public void autonomousPeriodic() {
-   double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
+    autoControl.autoPeriodic();
+   /*double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
     //System.out.println(time - startTime);
     SmartDashboard.putNumber("Auto Timer", time-startTime);
 
@@ -119,7 +128,7 @@ public class Robot extends TimedRobot {
       m_robotDrive.driveCartesian(-.3, 0, 0);
     } else {
       m_robotDrive.driveCartesian(0, 0, 0);
-    }
+    }*/
     /*frontLeftEncoder.go(4);
     frontRightEncoder.go(4);
     rearLeftEncoder.go(4);
@@ -142,7 +151,6 @@ public class Robot extends TimedRobot {
       speedAdjust.applyMaxSpeed(-DriveJoy.getX()), 
       speedAdjust.applyMaxSpeed(-spinJoy.getZ())
     );
-    
 
     if (FXNJoy.getTrigger()) {
       m_shooterControl.arcadeDrive(-shooterSpeed.currentMax, 0);
