@@ -31,7 +31,7 @@ public class auto {
         start = Timer.getFPGATimestamp();
         greenWheel.set(ControlMode.PercentOutput, 0.0);
         shooter.arcadeDrive(0.0, 0.0);
-        mecDrive.stopMotor();
+        mecDrive.driveCartesian(0.0, 0.0, 0.0);
     }
 
     public void autoPeriodic() {
