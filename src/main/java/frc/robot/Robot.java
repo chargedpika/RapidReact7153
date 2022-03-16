@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
   private solenoidCode Solonoids = new solenoidCode();
   private falcon500 FALCONCODE = new falcon500();
   private maxSpeed speedAdjust = new maxSpeed(1, 0.3, 0.5);
+  private maxSpeed shooterSpeed = new maxSpeed(2, 0.6, 0.9);
   
   //private THEGYRO gyro = new THEGYRO();
 
@@ -133,6 +134,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     speedAdjust.refresh();
+    shooterSpeed.refresh();
      
     //m_robotDrive.driveCartesian(-DriveJoy.getY(), DriveJoy.getX(), DriveJoy.getZ(), 0.0); UNUSUED UNTIL FURTHER NOTICE
     m_robotDrive.driveCartesian(
@@ -143,7 +145,7 @@ public class Robot extends TimedRobot {
     
 
     if (FXNJoy.getTrigger()) {
-      m_shooterControl.arcadeDrive(-0.7, 0);
+      m_shooterControl.arcadeDrive(-shooterSpeed.currentMax, 0);
     } else {
       m_shooterControl.arcadeDrive(0, 0);
     }
