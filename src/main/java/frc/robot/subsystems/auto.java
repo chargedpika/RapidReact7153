@@ -2,9 +2,17 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import java.util.List;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.Timer;
+
+// Vision Imports
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.vision.VisionThread;
+import org.opencv.core.*;
+import frc.robot.visiontargets.BlueBallPipeline;
 
 public class auto {
     // Drive elements
@@ -12,13 +20,41 @@ public class auto {
     private TalonFX greenWheel;
     private MecanumDrive mecDrive;
 
+    // Vision Pipelines
+    private final Object imgLock = new Object();
+    private VisionThread visionThread;
+    private double currentXTarget = 0;
+
+    private int videoWidth = 320;
+    private int videoHeight = 240;
+
+    // Auto
     double start;
     int step;
 
-    public auto(DifferentialDrive shooterDrive, TalonFX greenIntakeWheel, MecanumDrive mecanumDrive) {
+    public auto(DifferentialDrive shooterDrive, TalonFX greenIntakeWheel, MecanumDrive mecanumDrive, String robotColor) {
         shooter = shooterDrive;
         greenWheel = greenIntakeWheel;
         mecDrive = mecanumDrive;
+
+        UsbCamera camera = CameraServer.startAutomaticCapture(0);
+        camera.setResolution(videoWidth, videoHeight);
+
+        visionThread = new VisionThread(
+            camera,
+            (robotColor == "blue") ? new BlueBallPipeline() : new BlueBallPipeline(), // change
+            pipeline -> {
+                if (!pipeline.findBlobsOutput().empty()) {
+                    KeyPoint point = (pipeline.findBlobsOutput().toList().get(0));
+                    Point pt = point.pt;
+
+                    synchronized (imgLock) {
+                        currentXTarget = pt.x - (videoWidth/2);
+                    }
+                }
+            }
+        );
+        //visionThread.start();
     }
 
     public void autoStart() {
@@ -44,9 +80,9 @@ public class auto {
             if (Timer.getFPGATimestamp() - start >= 1.5) { nextStep(); }
         } else if (step == 2) {
             mecDrive.driveCartesian(0.0, 0.0, 0.35);
-            if (Timer.getFPGATimestamp() - start >= 1) { nextStep(); }
+            if (Timer.getFPGATimestamp() - start >= 1.4) { nextStep(); }
         } else if (step == 3) {
-            
+            //mecDrive.driveCartesian(0.0, 0.0, (currentXTarget > 0) ? -0.05 : 0.05);
         }
     }
 }

@@ -3,20 +3,10 @@ package frc.robot.visiontargets;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.HashMap;
-
 import edu.wpi.first.vision.VisionPipeline;
-
 import org.opencv.core.*;
-import org.opencv.core.Core.*;
-import org.opencv.features2d.FeatureDetector;
-import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.features2d.FastFeatureDetector;
 import org.opencv.imgproc.*;
-import org.opencv.objdetect.*;
 
 /**
 * BlueBallPipeline class.
@@ -50,9 +40,9 @@ public class BlueBallPipeline implements VisionPipeline {
 
 		// Step HSV_Threshold0:
 		Mat hsvThresholdInput = resizeImageOutput;
-		double[] hsvThresholdHue = {77.69784172661869, 116.36363636363639};
+		double[] hsvThresholdHue = {67.98561151079136, 134.54545454545456};
 		double[] hsvThresholdSaturation = {71.08812949640287, 255.0};
-		double[] hsvThresholdValue = {11.465827338129495, 255.0};
+		double[] hsvThresholdValue = {0.0, 255.0};
 		hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, hsvThresholdOutput);
 
 		// Step CV_erode0:
@@ -66,8 +56,8 @@ public class BlueBallPipeline implements VisionPipeline {
 
 		// Step Find_Blobs0:
 		Mat findBlobsInput = cvErodeOutput;
-		double findBlobsMinArea = 5.0;
-		double[] findBlobsCircularity = {0.5215827338129495, 1.0};
+		double findBlobsMinArea = 110.0;
+		double[] findBlobsCircularity = {0.6384892086330934, 1.0};
 		boolean findBlobsDarkBlobs = false;
 		findBlobs(findBlobsInput, findBlobsMinArea, findBlobsCircularity, findBlobsDarkBlobs, findBlobsOutput);
 
@@ -169,7 +159,7 @@ public class BlueBallPipeline implements VisionPipeline {
 	 */
 	private void findBlobs(Mat input, double minArea, double[] circularity,
 		Boolean darkBlobs, MatOfKeyPoint blobList) {
-		FeatureDetector blobDet = FeatureDetector.create(FeatureDetector.SIMPLEBLOB);
+		FastFeatureDetector blobDet = FastFeatureDetector.create(9);
 		try {
 			File tempFile = File.createTempFile("config", ".xml");
 

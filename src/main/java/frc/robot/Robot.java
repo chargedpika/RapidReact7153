@@ -103,12 +103,13 @@ public class Robot extends TimedRobot {
     autoControl = new auto(
       m_shooterControl,
       falcon500.motor,
-      m_robotDrive
+      m_robotDrive,
+      "blue"
     );
 
 
     DriveJoy = new Joystick(kJoystickChannel);
-    m_robotDrive.setDeadband(.1);
+    m_robotDrive.setDeadband(.2);
   }
 
   @Override
