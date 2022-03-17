@@ -36,12 +36,17 @@ public class auto {
 
     public void autoPeriodic() {
         if (step == 0) {
-            if (Timer.getFPGATimestamp() - start >= 1) { nextStep(); }
             shooter.arcadeDrive(-0.6, 0.0);
             greenWheel.set(ControlMode.PercentOutput, 0.5);
+            if (Timer.getFPGATimestamp() - start >= 1) { nextStep(); }
         } else if (step == 1) {
-            if (Timer.getFPGATimestamp() - start >= 1.5) { nextStep(); }
             mecDrive.driveCartesian(0.35, 0.0, 0.0);
+            if (Timer.getFPGATimestamp() - start >= 1.5) { nextStep(); }
+        } else if (step == 2) {
+            mecDrive.driveCartesian(0.0, 0.0, 0.35);
+            if (Timer.getFPGATimestamp() - start >= 1) { nextStep(); }
+        } else if (step == 3) {
+            
         }
     }
 }

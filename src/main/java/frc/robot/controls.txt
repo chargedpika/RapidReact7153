@@ -5,13 +5,11 @@ X/Y: Driving
 
 Joystick 1
 Z: spin
-Button 5: Intake down/Intake wheel spin
-Button 3: Intake up/Intake wheel off
-slider: increase MAX SPEED
+Trigger pull: intake down 
+slider : increase MAX SPEED OF ROBOT
 
 Joystick 2:
-Trigger: Shoot
-2: Green wheel
+Trigger: Shoot & indexer
 6: Arms up
 4: Arms down
 11: Green wheel reverse
