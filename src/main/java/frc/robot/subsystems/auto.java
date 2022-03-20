@@ -77,7 +77,7 @@ public class auto {
             if (Timer.getFPGATimestamp() - start >= 1) { nextStep(); }
         } else if (step == 1) {
             mecDrive.driveCartesian(0.35, 0.0, 0.0);
-            if (Timer.getFPGATimestamp() - start >= 1.5) { nextStep(); }
+            if (Timer.getFPGATimestamp() - start >= 3.0) { nextStep(); }
         } else if (step == 2) {
             mecDrive.driveCartesian(0.0, 0.0, 0.35);
             if (Timer.getFPGATimestamp() - start >= 1.4) { nextStep(); }

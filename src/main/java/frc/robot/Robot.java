@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
   private talonSRXwheel falconCode = new talonSRXwheel();
   private solenoidCode Solonoids = new solenoidCode();
   private falcon500 FALCONCODE = new falcon500();
-  private maxSpeed speedAdjust = new maxSpeed(1, 0.3, 0.5);
+  private maxSpeed speedAdjust = new maxSpeed(1, 0.4, 0.7);
   private maxSpeed shooterSpeed = new maxSpeed(2, 0.6, 0.9);
   
   //private THEGYRO gyro = new THEGYRO();
