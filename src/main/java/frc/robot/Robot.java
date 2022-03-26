@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 */
 //import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -35,12 +36,14 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.maxSpeed;
 import com.revrobotics.RelativeEncoder;
 //import frc.robot.subsystems.THEGYRO;
+import edu.wpi.first.cscore.UsbCamera;
 //import frc.robot.subsystems.*;
 
 import frc.robot.subsystems.encoder;
 import frc.robot.subsystems.falcon500;
 import frc.robot.subsystems.auto;
 import edu.wpi.first.cameraserver.CameraServer;
+import frc.robot.subsystems.pdh;
 
 
 /** This is a demo program showing how to use Mecanum control with the MecanumDrive class. */
@@ -74,6 +77,9 @@ public class Robot extends TimedRobot {
   CANSparkMax m_leftMotor = new CANSparkMax(7, MotorType.kBrushless);
   CANSparkMax m_rightMotor = new CANSparkMax(8, MotorType.kBrushless);
 
+  public UsbCamera frontCamera;
+
+  public pdh powerHub = new pdh();
   //RelativeEncoder frontLeftEncoder = frontLeftSpark.getEncoder();
   /*
   encoder frontLeftEncoder = new encoder(frontLeftSpark);
@@ -88,8 +94,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-  
-    CameraServer.startAutomaticCapture();
+    
+    frontCamera = CameraServer.startAutomaticCapture(0);
   
 
     // You may need to change or remove this to match your robot.
@@ -104,12 +110,19 @@ public class Robot extends TimedRobot {
       m_shooterControl,
       falcon500.motor,
       m_robotDrive,
+      frontCamera,
       "blue"
     );
 
 
     DriveJoy = new Joystick(kJoystickChannel);
     m_robotDrive.setDeadband(.2);
+  }
+
+  @Override
+  public void robotPeriodic() {
+    powerHub.refresh();
+    Solonoids.refreshValues();
   }
 
   @Override

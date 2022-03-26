@@ -5,17 +5,19 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-//import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Compressor;
 //import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class solenoidCode extends SubsystemBase {
   private final PneumaticsModuleType type = PneumaticsModuleType.REVPH; // Change this if needed :)
+  private Compressor comp = new Compressor(2, type);
   
   private final Joystick spinJoy = new Joystick(1);
   private final Joystick fxnJoy = new Joystick(2);
@@ -50,18 +52,6 @@ public class solenoidCode extends SubsystemBase {
   //private static final int kDoubleSolenoidReverse = 3;
 
   public void pistonMovement() {
-    /*
-     * The output of GetRawButton is true/false depending on whether
-     * the button is pressed; Set takes a boolean for whether
-     * to use the default (false) channel or the other (true).
-     */
-    //m_solenoid.set(m_stick.getRawButton(kSolenoidButton));
-
-    /*
-     * In order to set the double solenoid, if just one button
-     * is pressed, set the solenoid to correspond to that button.
-     * If both are pressed, set the solenoid will be set to Forwards.
-     */
     if (!spinJoy.getTrigger()) {
       frontLeft_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
       frontRight_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
@@ -77,12 +67,9 @@ public class solenoidCode extends SubsystemBase {
       barGrabberRight_DoubleSolenoid.set(DoubleSolenoid.Value.kReverse);
       barGrabberLeft_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
+  }
 
-    /*if (fxnJoy.getTrigger()) {
-      System.out.println(comp.getPressureSwitchValue());
-      System.out.println(comp.enabled());
-      comp.enableDigital();
-    }*/
-    
+  public void refreshValues() {
+    SmartDashboard.putBoolean("Pressure Switch", !comp.getPressureSwitchValue());
   }
 }

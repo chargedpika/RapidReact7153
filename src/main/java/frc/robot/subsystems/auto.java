@@ -28,20 +28,22 @@ public class auto {
     private int videoWidth = 320;
     private int videoHeight = 240;
 
+    private UsbCamera camera1;
+
     // Auto
     double start;
     int step;
 
-    public auto(DifferentialDrive shooterDrive, TalonFX greenIntakeWheel, MecanumDrive mecanumDrive, String robotColor) {
+    public auto(DifferentialDrive shooterDrive, TalonFX greenIntakeWheel, MecanumDrive mecanumDrive, UsbCamera cam1, String robotColor) {
         shooter = shooterDrive;
         greenWheel = greenIntakeWheel;
         mecDrive = mecanumDrive;
 
-        UsbCamera camera = CameraServer.startAutomaticCapture(0);
-        camera.setResolution(videoWidth, videoHeight);
-
+        camera1 = cam1;
+        camera1.setResolution(videoWidth, videoHeight);
+        
         visionThread = new VisionThread(
-            camera,
+            camera1,
             (robotColor == "blue") ? new BlueBallPipeline() : new BlueBallPipeline(), // change
             pipeline -> {
                 if (!pipeline.findBlobsOutput().empty()) {
@@ -54,7 +56,7 @@ public class auto {
                 }
             }
         );
-        //visionThread.start();
+        visionThread.start();
     }
 
     public void autoStart() {
