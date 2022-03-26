@@ -43,7 +43,7 @@ import frc.robot.subsystems.encoder;
 import frc.robot.subsystems.falcon500;
 import frc.robot.subsystems.auto;
 import edu.wpi.first.cameraserver.CameraServer;
-import frc.robot.subsystems.pdh;
+import frc.robot.subsystems.telemetry;
 
 
 /** This is a demo program showing how to use Mecanum control with the MecanumDrive class. */
@@ -79,7 +79,12 @@ public class Robot extends TimedRobot {
 
   public UsbCamera frontCamera;
 
-  public pdh powerHub = new pdh();
+  public telemetry telemetrySteam = new telemetry(
+    frontLeftSpark,
+    frontRightSpark,
+    rearLeftSpark,
+    rearRightSpark
+  );
   //RelativeEncoder frontLeftEncoder = frontLeftSpark.getEncoder();
   /*
   encoder frontLeftEncoder = new encoder(frontLeftSpark);
@@ -121,7 +126,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    powerHub.refresh();
+    telemetrySteam.refresh();
     Solonoids.refreshValues();
   }
 
