@@ -44,6 +44,10 @@ import frc.robot.subsystems.falcon500;
 import frc.robot.subsystems.auto;
 import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.subsystems.telemetry;
+import frc.robot.subsystems.mecanumOdometry;
+
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
 
 
 /** This is a demo program showing how to use Mecanum control with the MecanumDrive class. */
@@ -79,11 +83,22 @@ public class Robot extends TimedRobot {
 
   public UsbCamera frontCamera;
 
+  public AHRS gyro = new AHRS(SPI.Port.kMXP);
   public telemetry telemetrySteam = new telemetry(
     frontLeftSpark,
     frontRightSpark,
     rearLeftSpark,
-    rearRightSpark
+    rearRightSpark,
+    gyro
+  );
+  public mecanumOdometry odometry = new mecanumOdometry(
+    frontLeftSpark,
+    frontRightSpark,
+    rearLeftSpark,
+    rearRightSpark,
+    gyro,
+    0.5207,
+    0.508
   );
   //RelativeEncoder frontLeftEncoder = frontLeftSpark.getEncoder();
   /*
@@ -113,6 +128,7 @@ public class Robot extends TimedRobot {
     m_shooterControl = new DifferentialDrive(m_leftMotor, m_rightMotor);
     autoControl = new auto(
       m_shooterControl,
+      odometry,
       falcon500.motor,
       m_robotDrive,
       frontCamera,
@@ -128,6 +144,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     telemetrySteam.refresh();
     Solonoids.refreshValues();
+    odometry.updateWithSmartDashboard();
   }
 
   @Override
@@ -138,7 +155,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    autoControl.autoPeriodic();
+    //autoControl.autoPeriodic();
+    autoControl.autoOdometry();
    /*double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
     //System.out.println(time - startTime);
     SmartDashboard.putNumber("Auto Timer", time-startTime);
@@ -180,6 +198,50 @@ public class Robot extends TimedRobot {
     FALCONCODE.move(); //NOW BEING USED 
     Solonoids.pistonMovement(); 
     falconCode.intakeWheel();
+    }
+
+    @Override
+    public void disabledInit() {
+      odometry.robotDisabled = true;
+    }
+
+    // Measuring Rotation to Meter ratio
+    RelativeEncoder[] test_encoders;
+    Double[] test_startRotations;
+
+    @Override
+    public void testInit() {
+      test_encoders = new RelativeEncoder[] {
+        frontLeftSpark.getEncoder(),
+        frontRightSpark.getEncoder(),
+        rearLeftSpark.getEncoder(),
+        rearRightSpark.getEncoder()
+      };
+
+      test_startRotations = new Double[] {
+        test_encoders[0].getPosition(),
+        test_encoders[1].getPosition(),
+        test_encoders[2].getPosition(),
+        test_encoders[3].getPosition()
+      };
+
+      m_robotDrive.driveCartesian(-0.4, 0.0, 0.0);
+    }
+
+    @Override
+    public void testPeriodic() {
+      double dist = Math.abs(
+        (test_encoders[0].getPosition()-test_startRotations[0]) +
+        (test_encoders[1].getPosition()-test_startRotations[1]) +
+        (test_encoders[2].getPosition()-test_startRotations[2]) +
+        (test_encoders[3].getPosition()-test_startRotations[3])
+      )/4;
+      System.out.println(dist);
+      if (dist >= 20.0) {
+        m_robotDrive.driveCartesian(0.0, 0.0, 0.0);
+      } else {
+        m_robotDrive.driveCartesian(-0.4, 0.0, 0.0);
+      }
     }
 }
 //           :) (: 

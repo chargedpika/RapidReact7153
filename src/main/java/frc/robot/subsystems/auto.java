@@ -2,10 +2,13 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
+import java.util.Collection;
 import java.util.List;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.subsystems.mecanumOdometry;
 
 // Vision Imports
 import edu.wpi.first.cscore.UsbCamera;
@@ -19,6 +22,7 @@ public class auto {
     private DifferentialDrive shooter;
     private TalonFX greenWheel;
     private MecanumDrive mecDrive;
+    private mecanumOdometry mecOdometry;
 
     // Vision Pipelines
     private final Object imgLock = new Object();
@@ -34,10 +38,11 @@ public class auto {
     double start;
     int step;
 
-    public auto(DifferentialDrive shooterDrive, TalonFX greenIntakeWheel, MecanumDrive mecanumDrive, UsbCamera cam1, String robotColor) {
+    public auto(DifferentialDrive shooterDrive, mecanumOdometry odo, TalonFX greenIntakeWheel, MecanumDrive mecanumDrive, UsbCamera cam1, String robotColor) {
         shooter = shooterDrive;
         greenWheel = greenIntakeWheel;
         mecDrive = mecanumDrive;
+        mecOdometry = odo;
 
         camera1 = cam1;
         camera1.setResolution(videoWidth, videoHeight);
@@ -85,6 +90,19 @@ public class auto {
             if (Timer.getFPGATimestamp() - start >= 1.4) { nextStep(); }
         } else if (step == 3) {
             //mecDrive.driveCartesian(0.0, 0.0, (currentXTarget > 0) ? -0.05 : 0.05);
+        }
+    }
+
+    public void autoOdometry() {
+        if (step == 0) {
+            mecOdometry.updateSetpoints(3.0, 0.0, 0.0);
+            mecOdometry.robotDisabled = false;
+            step++;
+        } else if (step == 1) {
+            if (mecOdometry.setpointsDone) {
+                mecOdometry.robotDisabled = true;
+                nextStep();
+            }
         }
     }
 }

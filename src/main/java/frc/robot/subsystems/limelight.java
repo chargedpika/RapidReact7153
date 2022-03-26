@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import frc.robot.subsystems.PID;
 //import frc.robot.commands.UpdateCameraValues;
 public class limelight extends SubsystemBase {
-  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight"); 
+  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-toast"); 
   NetworkTableEntry tx= table.getEntry("tx"); 
   NetworkTableEntry ty = table.getEntry("ty"); 
   NetworkTableEntry ta = table.getEntry("ta");
