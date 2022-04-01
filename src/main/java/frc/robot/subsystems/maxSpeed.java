@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class maxSpeed {
     public double maxSpeedLow;
     public double maxSpeedHigh;
+    //public double deadband;
 
     public double currentMax;
     private Joystick joy;
@@ -15,9 +16,11 @@ public class maxSpeed {
         maxSpeedLow = min;
         maxSpeedHigh = max;
         currentMax = min;
+        //deadband = dead;
     }
 
     public double applyMaxSpeed(double value) {
+        //if (value <= deadband && value >= -deadband) { return 0.0; }
         return Math.min(Math.max(value, -currentMax), currentMax);
     }
 

@@ -20,9 +20,9 @@ public class mecanumOdometry {
     public AHRS gyro;
     private RelativeEncoder[] encoders;
     private PIDController[] pids = {
-        new PIDController(0.35, 0.2, 0.1), // Forward/Backward
+        new PIDController(0.2, 0.0, 0.0), // Forward/Backward
         new PIDController(0.35, 0.2, 0.1), // Left/Right
-        new PIDController(0.35, 0.2, 0.1) // Rotation
+        new PIDController(0.35, 0.2, 0.1) // Rotation (very different from other two)
     };
     
     public boolean setpointsDone = true;

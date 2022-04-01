@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 */
 //import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -45,6 +46,7 @@ import frc.robot.subsystems.auto;
 import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.subsystems.telemetry;
 import frc.robot.subsystems.mecanumOdometry;
+import frc.robot.subsystems.autoCenter;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
@@ -100,6 +102,8 @@ public class Robot extends TimedRobot {
     0.5207,
     0.508
   );
+  public JoystickButton autoCenterBttn = new JoystickButton(FXNJoy, 2);
+  public autoCenter center = new autoCenter();
   //RelativeEncoder frontLeftEncoder = frontLeftSpark.getEncoder();
   /*
   encoder frontLeftEncoder = new encoder(frontLeftSpark);
@@ -183,11 +187,15 @@ public class Robot extends TimedRobot {
     shooterSpeed.refresh();
      
     //m_robotDrive.driveCartesian(-DriveJoy.getY(), DriveJoy.getX(), DriveJoy.getZ(), 0.0); UNUSUED UNTIL FURTHER NOTICE
-    m_robotDrive.driveCartesian(
-      speedAdjust.applyMaxSpeed(DriveJoy.getY()),
-      speedAdjust.applyMaxSpeed(-DriveJoy.getX()), 
-      speedAdjust.applyMaxSpeed(-spinJoy.getZ())
-    );
+    if (autoCenterBttn.get()) {
+      m_robotDrive.driveCartesian(0.0, 0.0, center.getTurn());
+    } else {
+      m_robotDrive.driveCartesian(
+        speedAdjust.applyMaxSpeed(DriveJoy.getY()),
+        speedAdjust.applyMaxSpeed(-DriveJoy.getX()), 
+        speedAdjust.applyMaxSpeed(-spinJoy.getZ())
+      );
+    }
 
     if (FXNJoy.getTrigger()) {
       m_shooterControl.arcadeDrive(-shooterSpeed.currentMax, 0);
@@ -198,6 +206,7 @@ public class Robot extends TimedRobot {
     FALCONCODE.move(); //NOW BEING USED 
     Solonoids.pistonMovement(); 
     falconCode.intakeWheel();
+    center.distanceGauge();
     }
 
     @Override

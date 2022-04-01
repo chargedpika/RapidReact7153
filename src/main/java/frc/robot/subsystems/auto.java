@@ -61,7 +61,7 @@ public class auto {
                 }
             }
         );
-        visionThread.start();
+        //visionThread.start();
     }
 
     public void autoStart() {
