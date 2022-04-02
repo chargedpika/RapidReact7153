@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 //import edu.wpi.first.wpilibj.motorcontrol.Spark;
@@ -39,7 +40,7 @@ import com.revrobotics.RelativeEncoder;
 //import frc.robot.subsystems.THEGYRO;
 import edu.wpi.first.cscore.UsbCamera;
 //import frc.robot.subsystems.*;
-
+import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.subsystems.encoder;
 import frc.robot.subsystems.falcon500;
 import frc.robot.subsystems.auto;
@@ -47,6 +48,9 @@ import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.subsystems.telemetry;
 import frc.robot.subsystems.mecanumOdometry;
 import frc.robot.subsystems.autoCenter;
+import frc.robot.subsystems.shooterPID;
+
+import java.util.Map;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
@@ -104,6 +108,7 @@ public class Robot extends TimedRobot {
   );
   public JoystickButton autoCenterBttn = new JoystickButton(FXNJoy, 2);
   public autoCenter center = new autoCenter();
+  public shooterPID shootPID;
   //RelativeEncoder frontLeftEncoder = frontLeftSpark.getEncoder();
   /*
   encoder frontLeftEncoder = new encoder(frontLeftSpark);
@@ -114,6 +119,7 @@ public class Robot extends TimedRobot {
     //intakeWheel intakeWheel1 = new intakeWheel(); BRO WHAT IS THIS
 
   private double startTime;
+  private NetworkTableEntry shooterSpeedSlider;
 
   @Override
   public void robotInit() {
@@ -128,7 +134,7 @@ public class Robot extends TimedRobot {
     m_rightMotor.setInverted(true); //THIS IS FOR THE SHOOTER
 
     m_robotDrive = new MecanumDrive(frontLeftSpark, rearLeftSpark, frontRightSpark, rearRightSpark);
-    m_shooterControl = new DifferentialDrive(m_leftMotor, m_rightMotor);
+    //m_shooterControl = new DifferentialDrive(m_leftMotor, m_rightMotor);
     autoControl = new auto(
       m_shooterControl,
       odometry,
@@ -138,9 +144,15 @@ public class Robot extends TimedRobot {
       "blue"
     );
 
-
+    shootPID = new shooterPID(m_leftMotor, m_rightMotor);
     DriveJoy = new Joystick(kJoystickChannel);
     m_robotDrive.setDeadband(.2);
+
+    shooterSpeedSlider = Shuffleboard.getTab("Shoot Test")
+    .add("Shooter Speed", 3000.0)
+    .withWidget(BuiltInWidgets.kTextView)
+    .withProperties(Map.of("min", 3000.0, "max", 6000.0))
+    .getEntry();
   }
 
   @Override
@@ -196,20 +208,27 @@ public class Robot extends TimedRobot {
       );
     }
 
-    double speed = -((FXNJoy.getThrottle()+1.0)/2.0);
-    SmartDashboard.putNumber("Shooter Speed !", speed);
+    //double speed = -((FXNJoy.getThrottle()+1.0)/2.0);
+    //double speed = SmartDashboard.getNumber("Shooter Speed", 0.0);
+    double speed = shooterSpeedSlider.getDouble(0.0);
+    //System.out.println(speed);
+
+    //SmartDashboard.putNumber("Shooter Speed !", speed);
     if (FXNJoy.getTrigger()) {
       //m_shooterControl.arcadeDrive(-shooterSpeed.currentMax, 0);
       // :)
-      m_shooterControl.arcadeDrive(speed, 0.0);
+      //m_shooterControl.arcadeDrive(speed, 0.0);
+      shootPID.setSpeed(speed);
     } else {
-      m_shooterControl.arcadeDrive(0, 0);
+      //m_shooterControl.arcadeDrive(0, 0);
+      shootPID.setSpeed(0.0);
     }
     //falconCode.ballLift();
     FALCONCODE.move(); //NOW BEING USED 
     Solonoids.pistonMovement(); 
     falconCode.intakeWheel();
     center.distanceGauge();
+    shootPID.refresh();
     }
 
     @Override

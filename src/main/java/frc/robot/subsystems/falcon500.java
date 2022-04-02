@@ -14,7 +14,7 @@ public class falcon500 extends SubsystemBase {
     private Joystick joystick;
    // private JoystickButton button2; // NOT USED, INDEXER IS ON SHOOTER NOW
     private JoystickButton button11;
-    private double motorSpeed = .75;
+    private double motorSpeed = .85;
 
 
     private double shooterBttnDown = -1;
@@ -35,7 +35,7 @@ public class falcon500 extends SubsystemBase {
                   if (shooterBttnDown == -1) {
                     shooterBttnDown = Timer.getFPGATimestamp();
                     motor.set(ControlMode.PercentOutput, 0.0);
-                  } else if (Timer.getFPGATimestamp() - shooterBttnDown >= 1.0) {
+                  } else if (Timer.getFPGATimestamp() - shooterBttnDown >= 2.0) {
                     motor.set(ControlMode.PercentOutput, motorSpeed);
                   } else {
                     motor.set(ControlMode.PercentOutput, 0.0);
