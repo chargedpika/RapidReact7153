@@ -65,10 +65,10 @@ if (yVal != 0.0) {
 double limelightHeightInches = 27.5;
 
 // how many degrees back is your limelight rotated from perfectly vertical?
-double limelightMountAngleDegrees = 30.0;
+double limelightMountAngleDegrees = 25.0;
 
 // distance from the center of the Limelight lens to the floor
-double limelightLensHeightInches = 27.9375;
+double limelightLensHeightInches = 29.0;
 
 // distance from the target to the floor
 double goalHeightInches = 104.0;
@@ -77,7 +77,8 @@ double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Verti
 double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
 
 //calculate distance
-double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
+
+double distanceFromLimelightToGoalInches = (goalHeightInches - limelightHeightInches)/Math.tan(angleToGoalRadians);
     
     
         //System.out.println(distanceFromLimelightToGoalInches);
