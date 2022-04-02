@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -54,6 +55,12 @@ public class autoCenter {
 NetworkTableEntry ty = table.getEntry("ty");
 double targetOffsetAngle_Vertical = ty.getDouble(0.0);
 
+Double yVal = ty.getDouble(0.0);
+if (yVal != 0.0) {
+    SmartDashboard.putNumber("Limelight Y", yVal);
+}
+//SmartDashboard.putNumber("Limelight Y", ty.getDouble(0.0));
+
 // how high is your limelight off the ground?
 double limelightHeightInches = 27.5;
 
@@ -61,20 +68,20 @@ double limelightHeightInches = 27.5;
 double limelightMountAngleDegrees = 30.0;
 
 // distance from the center of the Limelight lens to the floor
-double limelightLensHeightInches = 20.0;
+double limelightLensHeightInches = 27.9375;
 
 // distance from the target to the floor
-double goalHeightInches = 103.0;
+double goalHeightInches = 104.0;
 
 double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
 double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
 
 //calculate distance
-double distanceFromLimelightToGoalInches = (goalHeightInches - limelightHeightInches)/Math.tan(angleToGoalRadians);
+double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
     
     
         //System.out.println(distanceFromLimelightToGoalInches);
-        SmartDashboard.putNumber("inches from goal", distanceFromLimelightToGoalInches);
+        SmartDashboard.putNumber("distance", distanceFromLimelightToGoalInches);
     }
 
     }

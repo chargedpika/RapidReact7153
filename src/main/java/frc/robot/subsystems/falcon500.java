@@ -7,13 +7,17 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.Date;
+import edu.wpi.first.wpilibj.Timer;
 import java.util.concurrent.TimeUnit;
 public class falcon500 extends SubsystemBase {
     public static TalonFX motor;
     private Joystick joystick;
    // private JoystickButton button2; // NOT USED, INDEXER IS ON SHOOTER NOW
     private JoystickButton button11;
-    private double motorSpeed = .5;
+    private double motorSpeed = .75;
+
+
+    private double shooterBttnDown = -1;
     
     
 
@@ -28,13 +32,22 @@ public class falcon500 extends SubsystemBase {
     // NEW FALCON FX MOVEFORWARD
     public void move() {
                 if (joystick.getTrigger()) {
+                  if (shooterBttnDown == -1) {
+                    shooterBttnDown = Timer.getFPGATimestamp();
+                    motor.set(ControlMode.PercentOutput, 0.0);
+                  } else if (Timer.getFPGATimestamp() - shooterBttnDown >= 1.0) {
+                    motor.set(ControlMode.PercentOutput, motorSpeed);
+                  } else {
+                    motor.set(ControlMode.PercentOutput, 0.0);
+                  }
                   //try {Thread.sleep(3000);
                       
                   //} catch (InterruptedException ex) {
                   //}  
-                    motor.set(ControlMode.PercentOutput, motorSpeed);
+                    //motor.set(ControlMode.PercentOutput, motorSpeed);
           } else {
             motor.set(ControlMode.PercentOutput, 0.0);
+            shooterBttnDown = -1.0;
             //NEW REVERSE
             if (button11.get()) {
                 motor.set(ControlMode.PercentOutput, -motorSpeed);

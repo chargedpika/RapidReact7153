@@ -72,7 +72,7 @@ public class Robot extends TimedRobot {
   private solenoidCode Solonoids = new solenoidCode();
   private falcon500 FALCONCODE = new falcon500();
   private maxSpeed speedAdjust = new maxSpeed(1, 0.4, 0.7);
-  private maxSpeed shooterSpeed = new maxSpeed(2, 0.6, 0.9);
+  private maxSpeed shooterSpeed = new maxSpeed(2, 0.89, 0.2);
   
   //private THEGYRO gyro = new THEGYRO();
 
@@ -113,7 +113,6 @@ public class Robot extends TimedRobot {
 */
     //intakeWheel intakeWheel1 = new intakeWheel(); BRO WHAT IS THIS
 
-    
   private double startTime;
 
   @Override
@@ -197,8 +196,12 @@ public class Robot extends TimedRobot {
       );
     }
 
+    double speed = -((FXNJoy.getThrottle()+1.0)/2.0);
+    SmartDashboard.putNumber("Shooter Speed !", speed);
     if (FXNJoy.getTrigger()) {
-      m_shooterControl.arcadeDrive(-shooterSpeed.currentMax, 0);
+      //m_shooterControl.arcadeDrive(-shooterSpeed.currentMax, 0);
+      // :)
+      m_shooterControl.arcadeDrive(speed, 0.0);
     } else {
       m_shooterControl.arcadeDrive(0, 0);
     }
