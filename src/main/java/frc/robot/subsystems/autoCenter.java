@@ -66,6 +66,12 @@ public class autoCenter {
         return s - 25;
     }
 
+    public boolean isInTarget() {
+        if (tv.getDouble(0.0) == 0.0) { return false; }
+        if (getX() < err && -getX() > -err) { return true; }
+        return false;
+    }
+
     public double distanceGauge() {
         double targetOffsetAngle_Vertical = ty.getDouble(0.0);
 

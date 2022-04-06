@@ -75,7 +75,7 @@ public class Robot extends TimedRobot {
   private talonSRXwheel falconCode = new talonSRXwheel();
   private solenoidCode Solonoids = new solenoidCode();
   private falcon500 FALCONCODE = new falcon500();
-  private maxSpeed speedAdjust = new maxSpeed(1, 0.4, 0.7);
+  private maxSpeed speedAdjust = new maxSpeed(1, 0.4, 0.8);
   private maxSpeed shooterSpeed = new maxSpeed(2, 0.89, 0.2);
   
   //private THEGYRO gyro = new THEGYRO();
@@ -133,7 +133,10 @@ public class Robot extends TimedRobot {
       falcon500.motor,
       m_robotDrive,
       frontCamera,
-      "blue"
+      "blue",
+      Solonoids,
+      falconCode,
+      center
     );
 
     odometry = new mecanumOdometry(
@@ -174,7 +177,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     //autoControl.autoPeriodic();
-    autoControl.autoOdometry();
+    autoControl.autoV2();
    /*double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
     //System.out.println(time - startTime);
     SmartDashboard.putNumber("Auto Timer", time-startTime);
@@ -232,6 +235,7 @@ public class Robot extends TimedRobot {
         shootPID.setSpeed(speed);
       }
     } else {
+
       //m_shooterControl.arcadeDrive(0, 0);
       shootPID.setSpeed(0.0);
     }

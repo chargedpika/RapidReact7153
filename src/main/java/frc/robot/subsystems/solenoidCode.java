@@ -69,6 +69,12 @@ public class solenoidCode extends SubsystemBase {
     }
   }
 
+  public void goToState(boolean state) {
+    DoubleSolenoid.Value val = (state) ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse;
+    frontLeft_doubleSolenoid.set(val);
+    frontRight_doubleSolenoid.set(val);
+  }
+
   public void refreshValues() {
     SmartDashboard.putBoolean("Pressure Switch", !comp.getPressureSwitchValue());
     SmartDashboard.putNumber("Pressure (PSI)", comp.getPressure());

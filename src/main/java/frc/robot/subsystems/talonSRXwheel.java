@@ -67,4 +67,10 @@ public class talonSRXwheel extends SubsystemBase {
     } else {
       motor9.set(ControlMode.PercentOutput, 0.0);
     }
-  }}
+  }
+
+  public void setIntakeState(boolean state) {
+    double speed = (state) ? 0.5 : 0.0;
+    motor9.set(ControlMode.PercentOutput, speed);
+  }
+}
