@@ -38,7 +38,8 @@ public class mecanumOdometry {
         CANSparkMax rearRight,
         AHRS g,
         double distanceBetweenFrontAndBackWheels, 
-        double distanceBetweenLeftAndRightWheels
+        double distanceBetweenLeftAndRightWheels,
+        MecanumDrive d
     ) {
         // Assumes robot wheels are equally spaced and centered
         // Units are in meters and should be measured from the center of the wheels
@@ -73,7 +74,8 @@ public class mecanumOdometry {
         encoders[2].setVelocityConversionFactor(rotationToMeterRate);
         encoders[3].setVelocityConversionFactor(rotationToMeterRate);
 
-        drive = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
+        //drive = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
+        drive = d;
         
         updateSetpoints(0.0, 0.0, 0.0);
     }

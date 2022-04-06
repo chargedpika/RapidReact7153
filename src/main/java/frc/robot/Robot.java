@@ -97,15 +97,7 @@ public class Robot extends TimedRobot {
     rearRightSpark,
     gyro
   );
-  public mecanumOdometry odometry = new mecanumOdometry(
-    frontLeftSpark,
-    frontRightSpark,
-    rearLeftSpark,
-    rearRightSpark,
-    gyro,
-    0.5207,
-    0.508
-  );
+  public mecanumOdometry odometry;
   public JoystickButton autoCenterBttn = new JoystickButton(FXNJoy, 2);
   public autoCenter center = new autoCenter();
   public shooterPID shootPID;
@@ -131,7 +123,7 @@ public class Robot extends TimedRobot {
     rearRightSpark.setInverted(true);
     frontRightSpark.setInverted(true);
 
-    m_rightMotor.setInverted(true); //THIS IS FOR THE SHOOTER
+    //m_rightMotor.setInverted(true); //THIS IS FOR THE SHOOTER
 
     m_robotDrive = new MecanumDrive(frontLeftSpark, rearLeftSpark, frontRightSpark, rearRightSpark);
     //m_shooterControl = new DifferentialDrive(m_leftMotor, m_rightMotor);
@@ -143,6 +135,17 @@ public class Robot extends TimedRobot {
       frontCamera,
       "blue"
     );
+
+    odometry = new mecanumOdometry(
+    frontLeftSpark,
+    frontRightSpark,
+    rearLeftSpark,
+    rearRightSpark,
+    gyro,
+    0.5207,
+    0.508,
+    m_robotDrive
+  );
 
     shootPID = new shooterPID(m_leftMotor, m_rightMotor);
     DriveJoy = new Joystick(kJoystickChannel);
@@ -208,26 +211,36 @@ public class Robot extends TimedRobot {
       );
     }
 
-    //double speed = -((FXNJoy.getThrottle()+1.0)/2.0);
-    //double speed = SmartDashboard.getNumber("Shooter Speed", 0.0);
-    double speed = shooterSpeedSlider.getDouble(0.0);
-    //System.out.println(speed);
+
+    //double speed = shooterSpeedSlider.getDouble(0.0);
 
     //SmartDashboard.putNumber("Shooter Speed !", speed);
     if (FXNJoy.getTrigger()) {
       //m_shooterControl.arcadeDrive(-shooterSpeed.currentMax, 0);
       // :)
       //m_shooterControl.arcadeDrive(speed, 0.0);
-      shootPID.setSpeed(speed);
+      //shootPID.setSpeed(speed);
+      if (FXNJoy.getThrottle() > 0) {
+        // Low goal
+        SmartDashboard.putString("Goal", "low");
+        shootPID.setSpeed(1800.0);
+      } else {
+        // High goal
+        SmartDashboard.putString("Goal", "high");
+        double speed = center.getSuggestedSpeed();
+        SmartDashboard.putNumber("Shooter Speed", speed);
+        shootPID.setSpeed(speed);
+      }
     } else {
       //m_shooterControl.arcadeDrive(0, 0);
       shootPID.setSpeed(0.0);
     }
     //falconCode.ballLift();
     FALCONCODE.move(); //NOW BEING USED 
+    FALCONCODE.winchMove();
     Solonoids.pistonMovement(); 
     falconCode.intakeWheel();
-    center.distanceGauge();
+    //center.distanceGauge();
     shootPID.refresh();
     }
 

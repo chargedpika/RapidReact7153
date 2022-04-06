@@ -71,5 +71,6 @@ public class solenoidCode extends SubsystemBase {
 
   public void refreshValues() {
     SmartDashboard.putBoolean("Pressure Switch", !comp.getPressureSwitchValue());
+    SmartDashboard.putNumber("Pressure (PSI)", comp.getPressure());
   }
 }
