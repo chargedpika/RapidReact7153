@@ -99,7 +99,8 @@ public class auto {
         greenWheel.set(ControlMode.PercentOutput, 0.0);
         shooter.arcadeDrive(0.0, 0.0);
         mecDrive.driveCartesian(0.0, 0.0, 0.0);
-        shootPID.setSpeed(0.0);
+        //shootPID.setSpeed(0.0);
+        System.out.println("Switched to step " + step);
     }
 
     public void auto1BallLow() {
@@ -119,6 +120,7 @@ public class auto {
     }
 
     public void auto2BallHigh() {
+        // right corner: 16in back, 2in right
         System.out.println(Timer.getFPGATimestamp() - start);
         if (step == 0) {
             solenoid.goToState(true);

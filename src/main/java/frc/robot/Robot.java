@@ -127,17 +127,6 @@ public class Robot extends TimedRobot {
 
     m_robotDrive = new MecanumDrive(frontLeftSpark, rearLeftSpark, frontRightSpark, rearRightSpark);
     //m_shooterControl = new DifferentialDrive(m_leftMotor, m_rightMotor);
-    autoControl = new auto(
-      m_shooterControl,
-      odometry,
-      falcon500.motor,
-      m_robotDrive,
-      frontCamera,
-      "blue",
-      Solonoids,
-      falconCode,
-      center
-    );
 
     odometry = new mecanumOdometry(
     frontLeftSpark,
@@ -153,6 +142,19 @@ public class Robot extends TimedRobot {
     shootPID = new shooterPID(m_leftMotor, m_rightMotor);
     DriveJoy = new Joystick(kJoystickChannel);
     m_robotDrive.setDeadband(.2);
+
+    autoControl = new auto(
+      m_shooterControl,
+      odometry,
+      falcon500.motor,
+      m_robotDrive,
+      frontCamera,
+      "blue",
+      Solonoids,
+      falconCode,
+      center,
+      shootPID
+    );
 
     shooterSpeedSlider = Shuffleboard.getTab("Shoot Test")
     .add("Shooter Speed", 3000.0)
@@ -177,7 +179,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     //autoControl.autoPeriodic();
-    autoControl.auto2BallHigh();
+    autoControl.auto1BallLow();
    /*double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
     //System.out.println(time - startTime);
     SmartDashboard.putNumber("Auto Timer", time-startTime);
