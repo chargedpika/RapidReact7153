@@ -1,5 +1,9 @@
 ## CONTROLS ##
 
+this is mostly outdated 
+mostly.
+-j
+
 Joystick 0
 X/Y: Driving
 

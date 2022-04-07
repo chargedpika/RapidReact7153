@@ -10,7 +10,7 @@ import java.util.Date;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.concurrent.TimeUnit;
 public class falcon500 extends SubsystemBase {
-    public static TalonFX motor;
+    public TalonFX motor;
     public TalonFX daveWheel;
     private Joystick joystick;
    // private JoystickButton button2; // NOT USED, INDEXER IS ON SHOOTER NOW

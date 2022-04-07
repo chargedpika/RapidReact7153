@@ -146,7 +146,7 @@ public class Robot extends TimedRobot {
     autoControl = new auto(
       m_shooterControl,
       odometry,
-      falcon500.motor,
+      FALCONCODE.motor,
       m_robotDrive,
       frontCamera,
       "blue",
