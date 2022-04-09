@@ -144,7 +144,16 @@ public class Robot extends TimedRobot {
     DriveJoy = new Joystick(kJoystickChannel);
     m_robotDrive.setDeadband(.2);
 
-    autoControl = new auto(shootPID, center, odometry, FALCONCODE.motor, m_robotDrive, frontCamera, "blue");
+    autoControl = new auto(
+      shootPID, 
+      center, 
+      odometry,
+       FALCONCODE.motor,
+        m_robotDrive, 
+        frontCamera,   
+         "blue",
+        Solonoids,
+        falconCode );
     
 
     shooterSpeedSlider = Shuffleboard.getTab("Shoot Test")
@@ -223,7 +232,7 @@ public class Robot extends TimedRobot {
       if (FXNJoy.getThrottle() > 0) {
         // Low goal
         SmartDashboard.putString("Goal", "low");
-        shootPID.setSpeed(1800.0);
+        shootPID.setSpeed(2200.0);
       } else {
         // High goal
         SmartDashboard.putString("Goal", "high");

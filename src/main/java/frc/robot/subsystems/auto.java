@@ -23,12 +23,15 @@ public class auto {
     private TalonFX greenWheel;
     private MecanumDrive mecDrive;
     private mecanumOdometry mecOdometry;
+    private autoCenter center;
+    private solenoidCode solenoid; 
+    private talonSRXwheel intake;
+ 
 
     // Vision Pipelines
     private final Object imgLock = new Object();
-    private VisionThread visionThread;
-    private double currentXTarget = 0;
-    private autoCenter center;
+    private VisionThread visionThread; 
+   
 
     private int videoWidth = 320;
     private int videoHeight = 240;
@@ -39,31 +42,43 @@ public class auto {
     double start;
     int step;
 
-    public auto(shooterPID shooterDrive, autoCenter C, mecanumOdometry odo, TalonFX greenIntakeWheel, MecanumDrive mecanumDrive, UsbCamera cam1, String robotColor) {
+    public auto(
+            shooterPID shooterDrive, 
+            autoCenter C, 
+            mecanumOdometry odo, 
+            TalonFX greenIntakeWheel, 
+            MecanumDrive mecanumDrive, 
+            UsbCamera cam1, 
+            String robotColor, 
+            solenoidCode S, 
+            talonSRXwheel intakeWheel
+            ) {
         shooter = shooterDrive;
         greenWheel = greenIntakeWheel;
         mecDrive = mecanumDrive;
         mecOdometry = odo;
         center = C;
+        this.solenoid = S;
+        this.intake = intakeWheel;
 
-        camera1 = cam1;
-        camera1.setResolution(videoWidth, videoHeight);
+        // camera1 = cam1;
+        // camera1.setResolution(videoWidth, videoHeight);
         
-        visionThread = new VisionThread(
-            camera1,
-            (robotColor == "blue") ? new BlueBallPipeline() : new BlueBallPipeline(), // change
-            pipeline -> {
-                if (!pipeline.findBlobsOutput().empty()) {
-                    KeyPoint point = (pipeline.findBlobsOutput().toList().get(0));
-                    Point pt = point.pt;
+        // visionThread = new VisionThread(
+        //     camera1,
+        //     (robotColor == "blue") ? new BlueBallPipeline() : new BlueBallPipeline(), // change
+        //     pipeline -> {
+        //         if (!pipeline.findBlobsOutput().empty()) {
+        //             KeyPoint point = (pipeline.findBlobsOutput().toList().get(0));
+        //             Point pt = point.pt;
 
-                    synchronized (imgLock) {
-                        currentXTarget = pt.x - (videoWidth/2);
-                    }
-                }
-            }
-        );
-        visionThread.start();
+        //             synchronized (imgLock) {
+        //                 currentXTarget = pt.x - (videoWidth/2);
+        //             }
+        //         }
+        //     }
+        // );
+        // visionThread.start();
     }
 
     public void autoStart() {
@@ -72,6 +87,7 @@ public class auto {
     }
 
     private void nextStep() {
+        System.out.println ("nextStep: " + step);
         step++;
         start = Timer.getFPGATimestamp();
         greenWheel.set(ControlMode.PercentOutput, 0.0);
@@ -81,18 +97,48 @@ public class auto {
 
     public void autoPeriodic() {
         if (step == 0) {
-           // double speed = center.getSuggestedSpeed();
+           
             shooter.setSpeed(2200.0);
             greenWheel.set(ControlMode.PercentOutput, 0.5);
             if (Timer.getFPGATimestamp() - start >= 1) { nextStep(); }
         } else if (step == 1) {
-            mecDrive.driveCartesian(0.35, 0.0, 0.0);
-            if (Timer.getFPGATimestamp() - start >= 3.0) { nextStep(); }
+            mecDrive.driveCartesian(0.4, 0.0, 0.0);
+            if (Timer.getFPGATimestamp() - start >= 1.5) { nextStep(); }
         } else if (step == 2) {
-            mecDrive.driveCartesian(0.0, 0.0, 0.35);
-            if (Timer.getFPGATimestamp() - start >= 1.4) { nextStep(); }
+            solenoid.goToState(false);
+            intake.setIntakeState(true);
+             { nextStep(); }
         } else if (step == 3) {
-            //mecDrive.driveCartesian(0.0, 0.0, (currentXTarget > 0) ? -0.05 : 0.05);
+            mecDrive.driveCartesian(0.0, 0.0, 0.35);
+            if (Timer.getFPGATimestamp() - start >= 1.38) { nextStep(); }
+        } else if (step == 4) {
+            mecDrive.driveCartesian(-0.4, 0.0, 0.0);
+            if (Timer.getFPGATimestamp() - start >= 1.7) { nextStep(); }
+        } else if (step == 5) {
+            solenoid.goToState(true);
+            intake.setIntakeState(false); 
+            if (Timer.getFPGATimestamp() - start >= 0.5)
+            { nextStep(); }
+        } else if (step == 6) {
+            mecDrive.driveCartesian(-0.0, 0.0, -.35);
+            if (Timer.getFPGATimestamp() - start >= 1.38) { nextStep(); }
+        } else if (step == 7) {
+            mecDrive.driveCartesian(-0.4, 0.0, 0.0);
+            if (Timer.getFPGATimestamp() - start >= 2) { nextStep(); }  
+        } else if (step == 8) {
+            mecDrive.driveCartesian(0.0, 0.0, center.getTurn());
+            if (center.isInTarget()) { nextStep(); }
+        } else if (step == 9) {
+            shooter.setSpeed(center.getSuggestedSpeed());
+            if (Timer.getFPGATimestamp() - start >= 1.0)
+            { 
+                step++;
+                 start = Timer.getFPGATimestamp();
+             }
+        } else if (step == 10) {
+            
+            greenWheel.set(ControlMode.PercentOutput, 0.5);
+            if (Timer.getFPGATimestamp() - start >= 3.0) { nextStep(); }
         }
     }
 
@@ -108,4 +154,8 @@ public class auto {
             }
         }
     }
+
+ 
+
+
 }
