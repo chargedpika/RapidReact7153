@@ -81,8 +81,8 @@ public class auto {
 
     public void autoPeriodic() {
         if (step == 0) {
-            double speed = center.getSuggestedSpeed();
-            shooter.setSpeed(speed);
+           // double speed = center.getSuggestedSpeed();
+            shooter.setSpeed(2200.0);
             greenWheel.set(ControlMode.PercentOutput, 0.5);
             if (Timer.getFPGATimestamp() - start >= 1) { nextStep(); }
         } else if (step == 1) {
