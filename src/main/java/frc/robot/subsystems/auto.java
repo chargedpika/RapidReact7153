@@ -103,7 +103,7 @@ public class auto {
         System.out.println("Switched to step " + step);
     }
 
-    public void auto1BallLow() {
+    public void autoPeriodic() {
         if (step == 0) {
             shooter.arcadeDrive(-0.6, 0.0);
             greenWheel.set(ControlMode.PercentOutput, 0.5);

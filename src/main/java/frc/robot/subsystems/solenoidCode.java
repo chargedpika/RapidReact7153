@@ -6,7 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.Compressor;
-//import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -25,6 +25,7 @@ public class solenoidCode extends SubsystemBase {
   //private final JoystickButton TURNOFF = new JoystickButton(spinJoy, 5);
   private final JoystickButton goUp = new JoystickButton(fxnJoy, 4);
   private final JoystickButton goDown = new JoystickButton(fxnJoy, 6);
+  private final JoystickButton witchLock = new JoystickButton(fxnJoy, 12);
   //private final JoystickButton winchUp = new JoystickButton(m_stick, )
 
 
@@ -36,6 +37,7 @@ public class solenoidCode extends SubsystemBase {
   private final DoubleSolenoid frontLeft_doubleSolenoid = new DoubleSolenoid(2, type, 7, 6);
   private final DoubleSolenoid barGrabberLeft_doubleSolenoid = new DoubleSolenoid(2, type, 3, 2);
   private final DoubleSolenoid barGrabberRight_DoubleSolenoid = new DoubleSolenoid(2, type, 1, 0);
+  private final Solenoid whinchSolenoid = new Solenoid(type, 4);
   //private final DoubleSolenoid whinchSolenoid = new DoubleSolenoid(2, type, 1, 0);
 
   //private final Compressor comp = new Compressor(2, type);
@@ -66,6 +68,9 @@ public class solenoidCode extends SubsystemBase {
     } else if (goDown.get()) {
       barGrabberRight_DoubleSolenoid.set(DoubleSolenoid.Value.kReverse);
       barGrabberLeft_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+    }
+    if (witchLock.get()) {
+whinchSolenoid.set(true);
     }
   }
 

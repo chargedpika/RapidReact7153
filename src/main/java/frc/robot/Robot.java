@@ -179,7 +179,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     //autoControl.autoPeriodic();
-    autoControl.auto1BallLow();
+    autoControl.auto1BallLow1BallHigh();
    /*double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
     //System.out.println(time - startTime);
     SmartDashboard.putNumber("Auto Timer", time-startTime);

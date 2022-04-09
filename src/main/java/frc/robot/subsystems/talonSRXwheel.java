@@ -27,7 +27,7 @@ public class talonSRXwheel extends SubsystemBase {
   private JoystickButton button2;
   private JoystickButton button3;
   private JoystickButton button5;
-  private JoystickButton button11;
+  //private JoystickButton button11;
   private JoystickButton button12;
   private double motor9speed = .5;
   //private double motor10speed = -0.8; // We might need to change this later :)
@@ -43,8 +43,8 @@ public class talonSRXwheel extends SubsystemBase {
     //button3 = new JoystickButton(spinJoy, 5);
 
     button2 = new JoystickButton(fxnJoy, 2);
-    button11 = new JoystickButton(fxnJoy, 11);
-    button12 = new JoystickButton(fxnJoy, 12);
+    //button11 = new JoystickButton(fxnJoy, 11);
+    //button12 = new JoystickButton(fxnJoy, 12);
   }
 
   //public void ballLift() {
