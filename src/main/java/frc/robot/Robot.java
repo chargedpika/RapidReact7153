@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+//import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.subsystems.talonSRXwheel;
 //import frc.robot.subsystems.falcon500; //UNUSED UNTIL FURTHER NOTICE
 import frc.robot.subsystems.solenoidCode;
@@ -69,7 +69,7 @@ public class Robot extends TimedRobot {
   
   private static final int kJoystickChannel = 0;
 
-  private DifferentialDrive m_shooterControl;
+  //private DifferentialDrive m_shooterControl;
   private MecanumDrive m_robotDrive;
   private auto autoControl;
   private static Joystick DriveJoy = new Joystick(0), spinJoy = new Joystick(1), FXNJoy = new Joystick(2);
@@ -144,7 +144,7 @@ public class Robot extends TimedRobot {
     DriveJoy = new Joystick(kJoystickChannel);
     m_robotDrive.setDeadband(.2);
 
-    autoControl(m_shooterControl, odometry, FALCONCODE.motor, m_robotDrive, frontCamera);
+    autoControl = new auto(shootPID, center, odometry, FALCONCODE.motor, m_robotDrive, frontCamera, "blue");
     
 
     shooterSpeedSlider = Shuffleboard.getTab("Shoot Test")
@@ -154,7 +154,7 @@ public class Robot extends TimedRobot {
     .getEntry();
   }
 
-  private void autoControl(DifferentialDrive m_shooterControl2, mecanumOdometry odometry2, TalonFX motor,
+  private void autoControl(shooterPID shootPID, mecanumOdometry odometry2, TalonFX motor,
       MecanumDrive m_robotDrive2, UsbCamera frontCamera2) {
   }
 

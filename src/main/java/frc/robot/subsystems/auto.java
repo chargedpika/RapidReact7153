@@ -19,7 +19,7 @@ import frc.robot.visiontargets.BlueBallPipeline;
 
 public class auto {
     // Drive elements
-    private DifferentialDrive shooter;
+    private shooterPID shooter;
     private TalonFX greenWheel;
     private MecanumDrive mecDrive;
     private mecanumOdometry mecOdometry;
@@ -28,6 +28,7 @@ public class auto {
     private final Object imgLock = new Object();
     private VisionThread visionThread;
     private double currentXTarget = 0;
+    private autoCenter center;
 
     private int videoWidth = 320;
     private int videoHeight = 240;
@@ -38,11 +39,12 @@ public class auto {
     double start;
     int step;
 
-    public auto(DifferentialDrive shooterDrive, mecanumOdometry odo, TalonFX greenIntakeWheel, MecanumDrive mecanumDrive, UsbCamera cam1, String robotColor) {
+    public auto(shooterPID shooterDrive, autoCenter C, mecanumOdometry odo, TalonFX greenIntakeWheel, MecanumDrive mecanumDrive, UsbCamera cam1, String robotColor) {
         shooter = shooterDrive;
         greenWheel = greenIntakeWheel;
         mecDrive = mecanumDrive;
         mecOdometry = odo;
+        center = C;
 
         camera1 = cam1;
         camera1.setResolution(videoWidth, videoHeight);
@@ -73,13 +75,14 @@ public class auto {
         step++;
         start = Timer.getFPGATimestamp();
         greenWheel.set(ControlMode.PercentOutput, 0.0);
-        shooter.arcadeDrive(0.0, 0.0);
+        shooter.setSpeed(0.0);
         mecDrive.driveCartesian(0.0, 0.0, 0.0);
     }
 
     public void autoPeriodic() {
         if (step == 0) {
-            shooter.arcadeDrive(-0.6, 0.0);
+            double speed = center.getSuggestedSpeed();
+            shooter.setSpeed(speed);
             greenWheel.set(ControlMode.PercentOutput, 0.5);
             if (Timer.getFPGATimestamp() - start >= 1) { nextStep(); }
         } else if (step == 1) {
