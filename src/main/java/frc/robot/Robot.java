@@ -52,6 +52,7 @@ import frc.robot.subsystems.shooterPID;
 
 import java.util.Map;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 
@@ -143,24 +144,18 @@ public class Robot extends TimedRobot {
     DriveJoy = new Joystick(kJoystickChannel);
     m_robotDrive.setDeadband(.2);
 
-    autoControl = new auto(
-      m_shooterControl,
-      odometry,
-      FALCONCODE.motor,
-      m_robotDrive,
-      frontCamera,
-      "blue",
-      Solonoids,
-      falconCode,
-      center,
-      shootPID
-    );
+    autoControl(m_shooterControl, odometry, FALCONCODE.motor, m_robotDrive, frontCamera);
+    
 
     shooterSpeedSlider = Shuffleboard.getTab("Shoot Test")
     .add("Shooter Speed", 3000.0)
     .withWidget(BuiltInWidgets.kTextView)
     .withProperties(Map.of("min", 3000.0, "max", 6000.0))
     .getEntry();
+  }
+
+  private void autoControl(DifferentialDrive m_shooterControl2, mecanumOdometry odometry2, TalonFX motor,
+      MecanumDrive m_robotDrive2, UsbCamera frontCamera2) {
   }
 
   @Override
@@ -179,7 +174,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     //autoControl.autoPeriodic();
-    autoControl.auto1BallLow1BallHigh();
+    autoControl.autoPeriodic();
    /*double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
     //System.out.println(time - startTime);
     SmartDashboard.putNumber("Auto Timer", time-startTime);

@@ -7,13 +7,8 @@ import java.util.Collection;
 import java.util.List;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.mecanumOdometry;
-import frc.robot.subsystems.solenoidCode;
-import frc.robot.subsystems.talonSRXwheel;
-import frc.robot.subsystems.autoCenter;
-import frc.robot.subsystems.shooterPID;
 
 // Vision Imports
 import edu.wpi.first.cscore.UsbCamera;
@@ -28,10 +23,6 @@ public class auto {
     private TalonFX greenWheel;
     private MecanumDrive mecDrive;
     private mecanumOdometry mecOdometry;
-    private solenoidCode solenoid;
-    private talonSRXwheel intake;
-    private autoCenter limelight;
-    private shooterPID shootPID;
 
     // Vision Pipelines
     private final Object imgLock = new Object();
@@ -47,26 +38,11 @@ public class auto {
     double start;
     int step;
 
-    public auto(
-        DifferentialDrive shooterDrive, 
-        mecanumOdometry odo, 
-        TalonFX greenIntakeWheel, 
-        MecanumDrive mecanumDrive, 
-        UsbCamera cam1, 
-        String robotColor, 
-        solenoidCode solonoid,
-        talonSRXwheel intakeWheel,
-        autoCenter ll,
-        shooterPID PIDshoot
-    ) {
+    public auto(DifferentialDrive shooterDrive, mecanumOdometry odo, TalonFX greenIntakeWheel, MecanumDrive mecanumDrive, UsbCamera cam1, String robotColor) {
         shooter = shooterDrive;
         greenWheel = greenIntakeWheel;
         mecDrive = mecanumDrive;
         mecOdometry = odo;
-        solenoid = solonoid;
-        intake = intakeWheel;
-        limelight = ll;
-        shootPID = PIDshoot;
 
         camera1 = cam1;
         camera1.setResolution(videoWidth, videoHeight);
@@ -85,7 +61,7 @@ public class auto {
                 }
             }
         );
-        //visionThread.start();
+        visionThread.start();
     }
 
     public void autoStart() {
@@ -99,8 +75,6 @@ public class auto {
         greenWheel.set(ControlMode.PercentOutput, 0.0);
         shooter.arcadeDrive(0.0, 0.0);
         mecDrive.driveCartesian(0.0, 0.0, 0.0);
-        //shootPID.setSpeed(0.0);
-        System.out.println("Switched to step " + step);
     }
 
     public void autoPeriodic() {
@@ -116,66 +90,6 @@ public class auto {
             if (Timer.getFPGATimestamp() - start >= 1.4) { nextStep(); }
         } else if (step == 3) {
             //mecDrive.driveCartesian(0.0, 0.0, (currentXTarget > 0) ? -0.05 : 0.05);
-        }
-    }
-
-    public void auto2BallHigh() {
-        // right corner: 16in back, 2in right
-        System.out.println(Timer.getFPGATimestamp() - start);
-        if (step == 0) {
-            solenoid.goToState(true);
-            intake.setIntakeState(true);
-            nextStep();
-        } else if (step == 1) {
-            mecDrive.driveCartesian(0.35, 0.0, 0.0);
-            if (Timer.getFPGATimestamp() - start >= 2.0) { nextStep(); }
-        } else if (step == 2) {
-            solenoid.goToState(false);
-            intake.setIntakeState(false);
-            nextStep();
-        } else if (step == 3) {
-            mecDrive.driveCartesian(0.0, 0.0, limelight.getTurn());
-            if (limelight.isInTarget()) { nextStep(); }
-        } else if (step == 4) {
-            mecDrive.driveCartesian(0.35, 0.0, 0.0);
-            if (Timer.getFPGATimestamp() - start > 0.4) { nextStep(); }
-        } else if (step == 5) {
-            //shooter.arcadeDrive(limelight.getSuggestedSpeed(), 0.0);
-            shootPID.setSpeed(limelight.getSuggestedSpeed());
-            if (Timer.getFPGATimestamp() - start >= 1.0) { nextStep(); }
-        } else if (step == 6) {
-            greenWheel.set(ControlMode.PercentOutput, 0.5);
-            if (Timer.getFPGATimestamp() - start >= 3.0) { nextStep(); }
-        }
-    }
-
-    public void auto1BallLow1BallHigh() {
-        System.out.println(Timer.getFPGATimestamp() - start);
-        if (step == 0) {
-            shooter.arcadeDrive(-0.6, 0.0);
-            greenWheel.set(ControlMode.PercentOutput, 0.5);
-            if (Timer.getFPGATimestamp() - start >= 1) { nextStep(); }
-        } else if (step == 1) {
-            mecDrive.driveCartesian(-0.4, 0.0, 0.0);
-            if (Timer.getFPGATimestamp() - start >= 1.5) { nextStep(); }
-        } else if (step == 2) {
-            solenoid.goToState(true);
-            intake.setIntakeState(true);
-        } else if (step == 3) {
-            mecDrive.driveCartesian(0.0, 0.0, 0.35);
-            if (Timer.getFPGATimestamp() - start >= 1.3) { nextStep(); }
-        } else if (step == 4) {
-            solenoid.goToState(false);
-            intake.setIntakeState(false);
-        } else if (step == 5) {
-            mecDrive.driveCartesian(0.0, 0.0, limelight.getTurn());
-            if (limelight.isInTarget()) { nextStep(); }
-        } else if (step == 6) {
-            shootPID.setSpeed(limelight.getSuggestedSpeed());
-            if (Timer.getFPGATimestamp() - start >= 1.0) { return; }
-        } else if (step == 7) {
-            greenWheel.set(ControlMode.PercentOutput, 0.5);
-            if (Timer.getFPGATimestamp() - start >= 3.0) { nextStep(); }
         }
     }
 
