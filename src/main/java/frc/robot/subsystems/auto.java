@@ -113,18 +113,18 @@ public class auto {
             if (Timer.getFPGATimestamp() - start >= 1.38) { nextStep(); }
         } else if (step == 4) {
             mecDrive.driveCartesian(-0.4, 0.0, 0.0);
-            if (Timer.getFPGATimestamp() - start >= 1.7) { nextStep(); }
+            if (Timer.getFPGATimestamp() - start >= 1.3) { nextStep(); } //was 1.7
         } else if (step == 5) {
             solenoid.goToState(true);
             intake.setIntakeState(false); 
-            if (Timer.getFPGATimestamp() - start >= 0.5)
+            if (Timer.getFPGATimestamp() - start >= 0.7) 
             { nextStep(); }
         } else if (step == 6) {
             mecDrive.driveCartesian(-0.0, 0.0, -.35);
             if (Timer.getFPGATimestamp() - start >= 1.38) { nextStep(); }
         } else if (step == 7) {
             mecDrive.driveCartesian(-0.4, 0.0, 0.0);
-            if (Timer.getFPGATimestamp() - start >= 2) { nextStep(); }  
+            if (Timer.getFPGATimestamp() - start >= 1.1) { nextStep(); }  //was 2
         } else if (step == 8) {
             mecDrive.driveCartesian(0.0, 0.0, center.getTurn());
             if (center.isInTarget()) { nextStep(); }
