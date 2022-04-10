@@ -68,7 +68,7 @@ public class autoCenter {
 
     public boolean isInTarget() {
         if (tv.getDouble(0.0) == 0.0) { return false; }
-        if (getX() < err && -getX() > -err) { return true; }
+        if (Math.abs(getX()) < err) { return true; }
         return false;
     }
 

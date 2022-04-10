@@ -103,7 +103,7 @@ public class auto {
             if (Timer.getFPGATimestamp() - start >= 1) { nextStep(); }
         } else if (step == 1) {
             mecDrive.driveCartesian(0.4, 0.0, 0.0);
-            if (Timer.getFPGATimestamp() - start >= 1.5) { nextStep(); }
+            if (Timer.getFPGATimestamp() - start >= .75) { nextStep(); }
         } else if (step == 2) {
             solenoid.goToState(false);
             intake.setIntakeState(true);
@@ -113,7 +113,7 @@ public class auto {
             if (Timer.getFPGATimestamp() - start >= 1.38) { nextStep(); }
         } else if (step == 4) {
             mecDrive.driveCartesian(-0.4, 0.0, 0.0);
-            if (Timer.getFPGATimestamp() - start >= 1.3) { nextStep(); } //was 1.7
+            if (Timer.getFPGATimestamp() - start >= 2.05) { nextStep(); } //was 1.7
         } else if (step == 5) {
             solenoid.goToState(true);
             intake.setIntakeState(false); 
