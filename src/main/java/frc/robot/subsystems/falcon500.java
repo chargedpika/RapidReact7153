@@ -39,7 +39,7 @@ public class falcon500 extends SubsystemBase {
                   if (shooterBttnDown == -1) {
                     shooterBttnDown = Timer.getFPGATimestamp();
                     motor.set(ControlMode.PercentOutput, 0.0);
-                  } else if (Timer.getFPGATimestamp() - shooterBttnDown >= 2.0) {
+                  } else if (Timer.getFPGATimestamp() - shooterBttnDown >= 0.9) {//was 2
                     motor.set(ControlMode.PercentOutput, motorSpeed);
                   } else {
                     motor.set(ControlMode.PercentOutput, 0.0);

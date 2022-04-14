@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.Solenoid;
@@ -16,8 +17,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class solenoidCode extends SubsystemBase {
-  private final PneumaticsModuleType type = PneumaticsModuleType.REVPH; // Change this if needed :)
-  private Compressor comp = new Compressor(2, type);
+  private final PneumaticsModuleType PHType = PneumaticsModuleType.REVPH; //we're using both now 
+  private Compressor comp = new Compressor(2, PHType);
+  private final PneumaticsModuleType PCMType = PneumaticsModuleType.CTREPCM;
   
   private final Joystick spinJoy = new Joystick(1);
   private final Joystick fxnJoy = new Joystick(2);
@@ -27,21 +29,27 @@ public class solenoidCode extends SubsystemBase {
   private final JoystickButton goDown = new JoystickButton(fxnJoy, 6);
   private final JoystickButton witchLock = new JoystickButton(fxnJoy, 12);
   //private final JoystickButton winchUp = new JoystickButton(m_stick, )
+  
 
 
+  
   // DoubleSolenoid corresponds to a double solenoid.
   //private final DoubleSolenoid l_doubleSolenoid = new DoubleSolenoid(2, type, 8, 9);
   //private final DoubleSolenoid r_doubleSolenoid = new DoubleSolenoid(2, type, 6, 7);
 
-  private final DoubleSolenoid frontRight_doubleSolenoid = new DoubleSolenoid(2, type, 9, 8);
-  private final DoubleSolenoid frontLeft_doubleSolenoid = new DoubleSolenoid(2, type, 7, 6);
-  private final DoubleSolenoid barGrabberLeft_doubleSolenoid = new DoubleSolenoid(2, type, 3, 2);
-  private final DoubleSolenoid barGrabberRight_DoubleSolenoid = new DoubleSolenoid(2, type, 1, 0);
-  private final Solenoid whinchSolenoid = new Solenoid(type, 4);
-  //private final DoubleSolenoid whinchSolenoid = new DoubleSolenoid(2, type, 1, 0);
+  private final DoubleSolenoid frontRight_doubleSolenoid = new DoubleSolenoid(12, PCMType, 7, 6);
+  private final DoubleSolenoid frontLeft_doubleSolenoid = new DoubleSolenoid(12, PCMType, 5, 4);
+  private final DoubleSolenoid barGrabberLeft_doubleSolenoid = new DoubleSolenoid(2, PHType, 3, 2);
+  private final DoubleSolenoid barGrabberRight_DoubleSolenoid = new DoubleSolenoid(2, PHType, 1, 0);
+  //private final Solenoid whinchSolenoid = new (, 4);
+  //private final DoubleSolenoid whinchSolenoid = new DoubleSolenoid(2, type, 1, 0)
+  ;
 
   //private final Compressor comp = new Compressor(2, type);
   //Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);
+  public solenoidCode(){
+    comp.enableDigital();
+  }
 
 
   public void teleopStarted() {
@@ -69,9 +77,9 @@ public class solenoidCode extends SubsystemBase {
       barGrabberRight_DoubleSolenoid.set(DoubleSolenoid.Value.kReverse);
       barGrabberLeft_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
-    if (witchLock.get()) {
-whinchSolenoid.set(true);
-    }
+    //if (witchLock.get()) {
+//whinchSolenoid.set(true);
+    //}
   }
 
   public void goToState(boolean state) {
@@ -81,7 +89,7 @@ whinchSolenoid.set(true);
   }
 
   public void refreshValues() {
-    SmartDashboard.putBoolean("Pressure Switch", !comp.getPressureSwitchValue());
+    SmartDashboard.putBoolean("Full Pressure?", !comp.getPressureSwitchValue());
     SmartDashboard.putNumber("Pressure (PSI)", comp.getPressure());
   }
 }

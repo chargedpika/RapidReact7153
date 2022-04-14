@@ -95,7 +95,7 @@ public class auto {
         mecDrive.driveCartesian(0.0, 0.0, 0.0);
     }
 
-    public void autoPeriodic() {
+    /*public void autoPeriodic() {
         if (step == 0) {
            
             shooter.setSpeed(2200.0);
@@ -141,7 +141,22 @@ public class auto {
             if (Timer.getFPGATimestamp() - start >= 3.0) { nextStep(); }
         }
     }
-
+*/
+public void autoPeriodic() {
+    if (step == 0) {
+        shooter.setSpeed(2200.0);
+       greenWheel.set(ControlMode.PercentOutput, 0.5);
+       if (Timer.getFPGATimestamp() - start >= 1) { nextStep(); }
+   } else if (step == 1) {
+        mecDrive.driveCartesian(0.35, 0.0, 0.0);
+        if (Timer.getFPGATimestamp() - start >= 3.0) { nextStep(); }
+    } else if (step == 2) {
+       // mecDrive.driveCartesian(0.0, 0.0, 0.35);
+        //if (Timer.getFPGATimestamp() - start >= 1.4) { nextStep(); }
+  //  } else if (step == 3) {
+ //       mecDrive.driveCartesian(0.0, 0.0, (currentXTarget > 0) ? -0.05 : 0.05);
+    }
+}
     public void autoOdometry() {
         if (step == 0) {
             mecOdometry.updateSetpoints(3.0, 0.0, 0.0);
