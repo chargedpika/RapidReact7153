@@ -17,7 +17,7 @@ public class falcon500 extends SubsystemBase {
     private JoystickButton button11;
     private JoystickButton button5;
     private JoystickButton button3;
-    private double motorSpeed = .85;
+    private double motorSpeed = 0.85; // .85
 
     private double daveSpeed = .5; 
 

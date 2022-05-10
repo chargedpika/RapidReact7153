@@ -49,6 +49,7 @@ import frc.robot.subsystems.telemetry;
 import frc.robot.subsystems.mecanumOdometry;
 import frc.robot.subsystems.autoCenter;
 import frc.robot.subsystems.shooterPID;
+import frc.robot.subsystems.autoBallVision;
 
 import java.util.Map;
 
@@ -89,6 +90,7 @@ public class Robot extends TimedRobot {
   CANSparkMax m_rightMotor = new CANSparkMax(8, MotorType.kBrushless);
 
   public UsbCamera frontCamera;
+  public UsbCamera intakeCamera;
 
   public AHRS gyro = new AHRS(SPI.Port.kMXP);
   public telemetry telemetrySteam = new telemetry(
@@ -101,6 +103,7 @@ public class Robot extends TimedRobot {
   public mecanumOdometry odometry;
   public JoystickButton autoCenterBttn = new JoystickButton(FXNJoy, 2);
   public autoCenter center = new autoCenter();
+  public autoBallVision autoVision;
   public shooterPID shootPID;
   //RelativeEncoder frontLeftEncoder = frontLeftSpark.getEncoder();
   /*
@@ -118,6 +121,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     
     frontCamera = CameraServer.startAutomaticCapture(0);
+    intakeCamera = CameraServer.startAutomaticCapture(1);
   
 
     // You may need to change or remove this to match your robot.
@@ -144,27 +148,36 @@ public class Robot extends TimedRobot {
     DriveJoy = new Joystick(kJoystickChannel);
     m_robotDrive.setDeadband(.2);
 
+    autoVision = new autoBallVision(
+        odometry, 
+        FALCONCODE.motor, 
+        m_robotDrive, 
+        frontCamera, 
+        "blue", 
+        Solonoids,
+        falconCode, 
+        center, 
+        shootPID
+      );
+
     autoControl = new auto(
       shootPID, 
       center, 
       odometry,
        FALCONCODE.motor,
         m_robotDrive, 
-        frontCamera,   
+        intakeCamera,   
          "blue",
         Solonoids,
-        falconCode );
-    
+        falconCode,
+        autoVision
+      );
 
     shooterSpeedSlider = Shuffleboard.getTab("Shoot Test")
     .add("Shooter Speed", 3000.0)
     .withWidget(BuiltInWidgets.kTextView)
     .withProperties(Map.of("min", 3000.0, "max", 6000.0))
     .getEntry();
-  }
-
-  private void autoControl(shooterPID shootPID, mecanumOdometry odometry2, TalonFX motor,
-      MecanumDrive m_robotDrive2, UsbCamera frontCamera2) {
   }
 
   @Override
@@ -184,6 +197,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     //autoControl.autoPeriodic();
     autoControl.autoPeriodic();
+    //autoVision.refresh();
    /*double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
     //System.out.println(time - startTime);
     SmartDashboard.putNumber("Auto Timer", time-startTime);
