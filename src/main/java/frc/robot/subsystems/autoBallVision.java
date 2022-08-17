@@ -26,7 +26,6 @@ import frc.robot.visiontargets.BlueBallPipeline;
 
 public class autoBallVision {
     // Drive elements
-    private DifferentialDrive shooter;
     private TalonFX greenWheel;
     private MecanumDrive mecDrive;
     private mecanumOdometry mecOdometry;
@@ -44,15 +43,15 @@ public class autoBallVision {
     private int videoHeight = 240;
 
     private UsbCamera camera1;
-    boolean isBalling = true;
+    boolean isBalling = false;
     boolean seesBalls = false;
+    boolean hasBalled = false;
     double camError = 1.0;
 
     // Auto
     double shootStart = -1.0;
 
     public autoBallVision(
-        DifferentialDrive shooterDrive, 
         mecanumOdometry odo, 
         TalonFX greenIntakeWheel, 
         MecanumDrive mecanumDrive, 
@@ -61,16 +60,15 @@ public class autoBallVision {
         solenoidCode solonoid,
         talonSRXwheel intakeWheel,
         autoCenter ll,
-        shooterPID PIDshoot
+        shooterPID pIDshoot
     ) {
-        shooter = shooterDrive;
         greenWheel = greenIntakeWheel;
         mecDrive = mecanumDrive;
         mecOdometry = odo;
         solenoid = solonoid;
         intake = intakeWheel;
         limelight = ll;
-        shootPID = PIDshoot;
+        shootPID = pIDshoot;
 
         camera1 = cam1;
         camera1.setResolution(videoWidth, videoHeight);
@@ -82,7 +80,34 @@ public class autoBallVision {
             pipeline -> {
                 if (!isBalling) { return; }
                 boolean noBalls = pipeline.findBlobsOutput().empty();
+                System.out.println(noBalls);
 
+                if (noBalls) {
+                    // no balls
+                    mecDrive.driveCartesian(0.0, 0.0, 0.1);
+                } else {
+                    // sees balls
+                    List<KeyPoint> blobs = pipeline.findBlobsOutput().toList();
+                    Collections.sort(blobs, new Comparator<KeyPoint>() {
+                        public int compare(KeyPoint a, KeyPoint b) {
+                            return Math.round(b.size - a.size);
+                        }
+                    });
+                    Point pt = blobs.get(0).pt;
+
+                    if (pt.x < -camError) {
+                        // Need to turn left
+                        mecDrive.driveCartesian(0.0, 0.0, -0.1);
+                    } else if (pt.x > camError) {
+                        // Needs to turn right
+                        mecDrive.driveCartesian(0.0, 0.0, 0.1);
+                    } else {
+                        // Needs to go forward
+                        mecDrive.driveCartesian(0.2, 0.0, 0.0);
+                        intake.setIntakeState(true);
+                    }
+                }
+                /*
                 if (noBalls && seesBalls) {
                     // Picked up a ball
                     isBalling = false;
@@ -100,41 +125,80 @@ public class autoBallVision {
                     Point pt = blobs.get(0).pt;
                     if (pt.x < -camError) {
                         // Need to turn left
-                        mecDrive.driveCartesian(0.0, 0.0, -0.4);
+                        mecDrive.driveCartesian(0.0, 0.0, -0.05);
                     } else if (pt.x > camError) {
                         // Needs to turn right
-                        mecDrive.driveCartesian(0.0, 0.0, 0.4);
+                        mecDrive.driveCartesian(0.0, 0.0, 0.05);
                     } else {
                         // Needs to go forward
-                        mecDrive.driveCartesian(0.4, 0.0, 0.0);
+                        mecDrive.driveCartesian(0.2, 0.0, 0.0);
                         solenoid.goToState(true);
                         intake.setIntakeState(true);
                     }
                 } else {
                     // No balls
-                    mecDrive.driveCartesian(0.0, 0.0, 0.4);
-                }
+                    mecDrive.driveCartesian(0.0, 0.0, 0.05);
+                }*/
             }
         );
-        visionThread.start();
+        //visionThread.start();
     }
 
     public void refresh() {
         if (isBalling) { return; }
-        if (shootStart == -1.0 && !limelight.isInTarget()) {
-            // Align limelight
-            mecDrive.driveCartesian(0.0, 0.0, limelight.getTurn());
-        } else if (shootStart == -1.0) {
-            // Start shooter
-            shootStart = Timer.getFPGATimestamp();
-            shootPID.setSpeed(limelight.getSuggestedSpeed());
-            greenWheel.set(ControlMode.PercentOutput, 0.85);
-        } else if (Timer.getFPGATimestamp() - shootStart >= 2.0) {
-            // Stop shooter (has shot)
+        if (!hasBalled) {
+            solenoid.goToState(false);
+            visionThread.start();
             shootPID.setSpeed(0.0);
+            shootStart = -1.0;
             greenWheel.set(ControlMode.PercentOutput, 0.0);
             isBalling = true;
             seesBalls = false;
+            hasBalled = true;
+            return;
+
+            /*if (shootStart == -1.0 && !limelight.isInTarget()) {
+                // Align limelight
+                mecDrive.driveCartesian(0.0, 0.0, limelight.getTurn());
+            } else if (shootStart == -1.0) {
+                // Start shooter
+                shootStart = Timer.getFPGATimestamp();
+                shootPID.setSpeed(limelight.getSuggestedSpeed());
+                greenWheel.set(ControlMode.PercentOutput, 0.85);
+            } else if (Timer.getFPGATimestamp() - shootStart >= 2.0) {
+                // Stop shooter (has shot)
+                visionThread.start();
+                shootPID.setSpeed(0.0);
+                shootStart = -1.0;
+                greenWheel.set(ControlMode.PercentOutput, 0.0);
+                isBalling = true;
+                seesBalls = false;
+                hasBalled = true;
+            }*/
+        } else {
+            if (!limelight.isInTarget()) {
+                // needs to align
+                //System.out.println("-=-=-=--0-0-0-0-0-0-0-0-0-0 Trying to do limelight magic ");
+                mecDrive.driveCartesian(0.0, 0.0, limelight.getTurn());
+            } else {
+                if (shootStart == -1.0) {
+                    shootStart = Timer.getFPGATimestamp();
+                }
+                mecDrive.driveCartesian(0.0, 0.0, 0.0);
+                greenWheel.set(ControlMode.PercentOutput, 0.85);
+                // needs to shoot
+                if (Timer.getFPGATimestamp() - shootStart >= 2) {
+                    // stop shooting, go back to vision
+                    shootPID.setSpeed(0.0);
+                    shootStart = -1.0;
+                    greenWheel.set(ControlMode.PercentOutput, 0.0);
+                    isBalling = true;
+                    seesBalls = false;
+                } else {
+                    // shoot
+                    shootPID.setSpeed(limelight.getSuggestedSpeed());
+                }
+            }
         }
     }
 }

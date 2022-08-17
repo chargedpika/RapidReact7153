@@ -49,8 +49,11 @@ import frc.robot.subsystems.telemetry;
 import frc.robot.subsystems.mecanumOdometry;
 import frc.robot.subsystems.autoCenter;
 import frc.robot.subsystems.shooterPID;
+import frc.robot.subsystems.autoBallVision;
 
 import java.util.Map;
+
+import javax.swing.Spring;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
@@ -78,6 +81,7 @@ public class Robot extends TimedRobot {
   private falcon500 FALCONCODE = new falcon500();
   private maxSpeed speedAdjust = new maxSpeed(1, 0.4, 0.9);//was .8
   private maxSpeed shooterSpeed = new maxSpeed(2, 0.89, 0.2);
+  private maxSpeed turnAdjust = new maxSpeed(1, 0.25, 0.25);
   
   //private THEGYRO gyro = new THEGYRO();
 
@@ -89,6 +93,7 @@ public class Robot extends TimedRobot {
   CANSparkMax m_rightMotor = new CANSparkMax(8, MotorType.kBrushless);
 
   public UsbCamera frontCamera;
+  public UsbCamera intakeCamera;
 
   public AHRS gyro = new AHRS(SPI.Port.kMXP);
   public telemetry telemetrySteam = new telemetry(
@@ -101,6 +106,7 @@ public class Robot extends TimedRobot {
   public mecanumOdometry odometry;
   public JoystickButton autoCenterBttn = new JoystickButton(FXNJoy, 2);
   public autoCenter center = new autoCenter();
+  public autoBallVision autoVision;
   public shooterPID shootPID;
   //RelativeEncoder frontLeftEncoder = frontLeftSpark.getEncoder();
   /*
@@ -118,6 +124,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     
     frontCamera = CameraServer.startAutomaticCapture(0);
+    intakeCamera = CameraServer.startAutomaticCapture(1);
   
 
     // You may need to change or remove this to match your robot.
@@ -144,17 +151,30 @@ public class Robot extends TimedRobot {
     DriveJoy = new Joystick(kJoystickChannel);
     m_robotDrive.setDeadband(.2);
 
+    autoVision = new autoBallVision(
+        odometry, 
+        FALCONCODE.motor, 
+        m_robotDrive, 
+        frontCamera, 
+        "blue", 
+        Solonoids,
+        falconCode, 
+        center, 
+        shootPID
+      );
+
     autoControl = new auto(
       shootPID, 
       center, 
       odometry,
        FALCONCODE.motor,
         m_robotDrive, 
-        frontCamera,   
+        intakeCamera,   
          "blue",
         Solonoids,
-        falconCode );
-    
+        falconCode,
+        autoVision
+      );
 
     shooterSpeedSlider = Shuffleboard.getTab("Shoot Test")
     .add("Shooter Speed", 3000.0)
@@ -163,15 +183,12 @@ public class Robot extends TimedRobot {
     .getEntry();
   }
 
-  private void autoControl(shooterPID shootPID, mecanumOdometry odometry2, TalonFX motor,
-      MecanumDrive m_robotDrive2, UsbCamera frontCamera2) {
-  }
-
   @Override
   public void robotPeriodic() {
     telemetrySteam.refresh();
     Solonoids.refreshValues();
     odometry.updateWithSmartDashboard();
+    //System.out.println(-spinJoy.getZ());
   }
 
   @Override
@@ -184,6 +201,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     //autoControl.autoPeriodic();
     autoControl.autoPeriodic();
+    //autoVision.refresh();
    /*double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
     //System.out.println(time - startTime);
     SmartDashboard.putNumber("Auto Timer", time-startTime);
@@ -216,7 +234,11 @@ public class Robot extends TimedRobot {
       m_robotDrive.driveCartesian(
         speedAdjust.applyMaxSpeed(DriveJoy.getY()),
         speedAdjust.applyMaxSpeed(-DriveJoy.getX()), 
-        speedAdjust.applyMaxSpeed(-spinJoy.getZ())
+        speedAdjust.applyMaxSpeed(
+          // deadband:
+          //(-spinJoy.getZ() <= 0.05 && -spinJoy.getZ() >= -0.05) ? 0.0 : -spinJoy.getZ()
+          -spinJoy.getZ()
+        )
       );
     }
 
@@ -247,7 +269,7 @@ public class Robot extends TimedRobot {
     }
     //falconCode.ballLift();
     FALCONCODE.move(); //NOW BEING USED 
-    FALCONCODE.winchMove();
+    //FALCONCODE.winchMove();
     Solonoids.pistonMovement(); 
     falconCode.intakeWheel();
     //center.distanceGauge();

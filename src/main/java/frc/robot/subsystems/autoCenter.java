@@ -24,7 +24,7 @@ public class autoCenter {
     private Double err = 0.5;
 
     public autoCenter() {
-        pid.setSetpoint(0.0);
+        pid.setSetpoint(0.0); // Adjust error here
     }
 
     private double getX() {

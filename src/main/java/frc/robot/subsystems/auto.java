@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.subsystems.autoBallVision;
 //import frc.robot.subsystems.mecanumOdometry;
 
 // Vision Imports
@@ -28,6 +29,7 @@ public class auto {
     private autoCenter center;
     private solenoidCode solenoid; 
     private talonSRXwheel intake;
+    private autoBallVision autoVision;
  
 
     // Vision Pipelines
@@ -117,8 +119,13 @@ public class auto {
             }
         }
     };
-    
 
+    IAutoPeriodic autoInfiniteBall = new IAutoPeriodic() {
+        public void doit() {
+            autoVision.refresh();
+        }
+    };
+    
     public auto(
             shooterPID shooterDrive, 
             autoCenter C, 
@@ -128,7 +135,8 @@ public class auto {
             UsbCamera cam1, 
             String robotColor, 
             solenoidCode S, 
-            talonSRXwheel intakeWheel
+            talonSRXwheel intakeWheel,
+            autoBallVision vision
             ) {
         shooter = shooterDrive;
         greenWheel = greenIntakeWheel;
@@ -137,10 +145,12 @@ public class auto {
         center = C;
         this.solenoid = S;
         this.intake = intakeWheel;
+        autoVision = vision;
 
 
         autoChooser.setDefaultOption("Great: 2 Ball", auto2Ball);
         autoChooser.addOption("Lame:  1 Ball Auto", auto1Ball);
+        autoChooser.addOption("Infinite Ball", autoInfiniteBall);
 
        // Shuffleboard.selectTab("Drive");
         SmartDashboard.putData(autoChooser);
