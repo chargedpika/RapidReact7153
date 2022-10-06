@@ -5,34 +5,28 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.Solenoid;
+//import edu.wpi.first.wpilibj.Compressor;
+//import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class solenoidCode extends SubsystemBase {
-  private final PneumaticsModuleType PHType = PneumaticsModuleType.REVPH; //we're using both now 
-  private Compressor comp = new Compressor(2, PHType);
+  private final PneumaticsModuleType PHType = PneumaticsModuleType.REVPH; // Change this if needed :)
   private final PneumaticsModuleType PCMType = PneumaticsModuleType.CTREPCM;
-  
+
   private final Joystick spinJoy = new Joystick(1);
   private final Joystick fxnJoy = new Joystick(2);
-  //private final JoystickButton TURNON = new JoystickButton(spinJoy, 3);
-  //private final JoystickButton TURNOFF = new JoystickButton(spinJoy, 5);
+  private final JoystickButton TURNON = new JoystickButton(fxnJoy, 3);
+  private final JoystickButton TURNOFF = new JoystickButton(fxnJoy, 5);
   private final JoystickButton goUp = new JoystickButton(fxnJoy, 4);
   private final JoystickButton goDown = new JoystickButton(fxnJoy, 6);
-  private final JoystickButton witchLock = new JoystickButton(fxnJoy, 12);
   //private final JoystickButton winchUp = new JoystickButton(m_stick, )
-  
 
 
-  
   // DoubleSolenoid corresponds to a double solenoid.
   //private final DoubleSolenoid l_doubleSolenoid = new DoubleSolenoid(2, type, 8, 9);
   //private final DoubleSolenoid r_doubleSolenoid = new DoubleSolenoid(2, type, 6, 7);
@@ -41,31 +35,41 @@ public class solenoidCode extends SubsystemBase {
   private final DoubleSolenoid frontLeft_doubleSolenoid = new DoubleSolenoid(12, PCMType, 5, 4);
   private final DoubleSolenoid barGrabberLeft_doubleSolenoid = new DoubleSolenoid(2, PHType, 3, 2);
   private final DoubleSolenoid barGrabberRight_DoubleSolenoid = new DoubleSolenoid(2, PHType, 1, 0);
-  //private final Solenoid whinchSolenoid = new (, 4);
-  //private final DoubleSolenoid whinchSolenoid = new DoubleSolenoid(2, type, 1, 0)
-  ;
+  //private final DoubleSolenoid whinchSolenoid = new DoubleSolenoid(2, type, 1, 0);
 
   //private final Compressor comp = new Compressor(2, type);
   //Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);
-  public solenoidCode(){
-    comp.enableDigital();
-  }
 
 
   public void teleopStarted() {
     //comp.disable();
   }
 
-
+  public void autoPistonMvmt() {
+frontLeft_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+frontRight_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+  };
   //private static final int kSolenoidButton = 2;
   //private static final int kDoubleSolenoidForward = 5;
   //private static final int kDoubleSolenoidReverse = 3;
 
   public void pistonMovement() {
-    if (!spinJoy.getTrigger()) {
+    /*
+     * The output of GetRawButton is true/false depending on whether
+     * the button is pressed; Set takes a boolean for whether
+     * to use the default (false) channel or the other (true).
+     */
+    //m_solenoid.set(m_stick.getRawButton(kSolenoidButton));
+
+    /*
+     * In order to set the double solenoid, if just one button
+     * is pressed, set the solenoid to correspond to that button.
+     * If both are pressed, set the solenoid will be set to Forwards.
+     */
+    if (TURNON.get()) {
       frontLeft_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
       frontRight_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
-    } else {
+    } else if (TURNOFF.get()) {
       frontLeft_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
       frontRight_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
@@ -77,19 +81,12 @@ public class solenoidCode extends SubsystemBase {
       barGrabberRight_DoubleSolenoid.set(DoubleSolenoid.Value.kReverse);
       barGrabberLeft_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
-    //if (witchLock.get()) {
-//whinchSolenoid.set(true);
-    //}
-  }
 
-  public void goToState(boolean state) {
-    DoubleSolenoid.Value val = (state) ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse;
-    frontLeft_doubleSolenoid.set(val);
-    frontRight_doubleSolenoid.set(val);
-  }
-
-  public void refreshValues() {
-    SmartDashboard.putBoolean("Full Pressure?", !comp.getPressureSwitchValue());
-    SmartDashboard.putNumber("Pressure (PSI)", comp.getPressure());
+    /*if (fxnJoy.getTrigger()) {
+      System.out.println(comp.getPressureSwitchValue());
+      System.out.println(comp.enabled());
+      comp.enableDigital();
+    }*/
+    
   }
 }

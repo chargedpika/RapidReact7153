@@ -17,19 +17,17 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 */
 //import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 //import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-//import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.subsystems.talonSRXwheel;
 //import frc.robot.subsystems.falcon500; //UNUSED UNTIL FURTHER NOTICE
 import frc.robot.subsystems.solenoidCode;
@@ -38,26 +36,25 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.maxSpeed;
 import com.revrobotics.RelativeEncoder;
 //import frc.robot.subsystems.THEGYRO;
-import edu.wpi.first.cscore.UsbCamera;
-//import frc.robot.subsystems.*;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.subsystems.encoder;
-import frc.robot.subsystems.falcon500;
-import frc.robot.subsystems.auto;
 import edu.wpi.first.cameraserver.CameraServer;
-import frc.robot.subsystems.telemetry;
-import frc.robot.subsystems.mecanumOdometry;
-import frc.robot.subsystems.autoCenter;
-import frc.robot.subsystems.shooterPID;
-import frc.robot.subsystems.autoBallVision;
 
-import java.util.Map;
+import org.opencv.core.Rect;
+import org.opencv.imgproc.Imgproc;
 
-import javax.swing.Spring;
+import frc.robot.visionFile;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+//import edu.wpi.first.wpilibj.PWMSparkMax;
+//import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.vision.VisionRunner;
+import edu.wpi.first.vision.VisionThread;
+import org.opencv.core.*;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SPI;
+import frc.robot.subsystems.visionProcessing;
+import frc.robot.vision.FindRedAreasTwo;
+
 
 
 /** This is a demo program showing how to use Mecanum control with the MecanumDrive class. */
@@ -66,22 +63,37 @@ public class Robot extends TimedRobot {
   private static final int kRearLeftChannel = 3;
   private static final int kFrontRightChannel = 1;
   private static final int kRearRightChannel = 0;
+  
 */
+
+//////////////////////////////////////
+private static final int IMG_WIDTH = 320;
+    private static final int IMG_HEIGHT = 240;
+
+    private VisionThread visionThread;
+    private double centerX = 0.0;
+    //private DifferentialDrive drive;
+    //private PWMSparkMax left;
+    //private PWMSparkMax right;
+    private visionProcessing vision = new visionProcessing(320, 240);
+
+    private final Object imgLock = new Object();
+
+    /////////////////////////////////////////
+
 
 
   
   private static final int kJoystickChannel = 0;
 
-  //private DifferentialDrive m_shooterControl;
+  private DifferentialDrive m_shooterControl;
   private MecanumDrive m_robotDrive;
-  private auto autoControl;
   private static Joystick DriveJoy = new Joystick(0), spinJoy = new Joystick(1), FXNJoy = new Joystick(2);
   private talonSRXwheel falconCode = new talonSRXwheel();
+  //private falcon500 falcon = new falcon500(); //UNUSED UNTIL FURTHER NOTICE
   private solenoidCode Solonoids = new solenoidCode();
-  private falcon500 FALCONCODE = new falcon500();
-  private maxSpeed speedAdjust = new maxSpeed(1, 0.4, 0.9);//was .8
-  private maxSpeed shooterSpeed = new maxSpeed(2, 0.89, 0.2);
-  private maxSpeed turnAdjust = new maxSpeed(1, 0.25, 0.25);
+  private maxSpeed speedAdjust = new maxSpeed(0.3, 0.5);
+  private visionFile images = new visionFile();
   
   //private THEGYRO gyro = new THEGYRO();
 
@@ -92,117 +104,111 @@ public class Robot extends TimedRobot {
   CANSparkMax m_leftMotor = new CANSparkMax(7, MotorType.kBrushless);
   CANSparkMax m_rightMotor = new CANSparkMax(8, MotorType.kBrushless);
 
-  public UsbCamera frontCamera;
-  public UsbCamera intakeCamera;
-
-  public AHRS gyro = new AHRS(SPI.Port.kMXP);
-  public telemetry telemetrySteam = new telemetry(
-    frontLeftSpark,
-    frontRightSpark,
-    rearLeftSpark,
-    rearRightSpark,
-    gyro
-  );
-  public mecanumOdometry odometry;
-  public JoystickButton autoCenterBttn = new JoystickButton(FXNJoy, 2);
-  public autoCenter center = new autoCenter();
-  public autoBallVision autoVision;
-  public shooterPID shootPID;
   //RelativeEncoder frontLeftEncoder = frontLeftSpark.getEncoder();
-  /*
   encoder frontLeftEncoder = new encoder(frontLeftSpark);
   encoder frontRightEncoder = new encoder(frontRightSpark);
   encoder rearLeftEncoder = new encoder(rearLeftSpark);
   encoder rearRightEncoder = new encoder(rearRightSpark);
-*/
+
     //intakeWheel intakeWheel1 = new intakeWheel(); BRO WHAT IS THIS
 
+    
   private double startTime;
-  private NetworkTableEntry shooterSpeedSlider;
 
   @Override
   public void robotInit() {
-    
-    frontCamera = CameraServer.startAutomaticCapture(0);
-    intakeCamera = CameraServer.startAutomaticCapture(1);
+
+    /////////////////////////////////////////////////////
+
+    UsbCamera camera = CameraServer.startAutomaticCapture();
+    camera.setResolution(IMG_WIDTH, IMG_HEIGHT);
+
+    //final visionFile images = new visionFile();
+
+    /*
+   * Creates a new vision thread that continuously runs the given vision pipeline. This is
+   * equivalent to {@code new VisionThread(new VisionRunner<>(videoSource, pipeline, listener))}.
+   *
+   * @param videoSource the source for images the pipeline should process
+   * @param pipeline the pipeline to run
+   * @param listener the listener to copy outputs from the pipeline after it runs
+   * @param <P> the type of the pipeline
+   *
+  public <P extends VisionPipeline> VisionThread(
+    VideoSource videoSource, P pipeline, VisionRunner.Listener<? super P> listener) {
+  this(new VisionRunner<>(videoSource, pipeline, listener));
+}*/
+
+    /*visionThread = new VisionThread(
+      camera, 
+      new FindRedAreasTwo(), 
+      pipeline -> {
+        if (!pipeline.filterContoursOutput().isEmpty()) {
+            Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
+            synchronized (imgLock) {
+                centerX = r.x + (r.width / 2);
+                System.out.println("Red cargo is at x position " + centerX);
+                SmartDashboard.putNumber("Red Cargo Position", centerX);
+
+                m_robotDrive.driveCartesian(0.0, 0.0, zRotation);
+            }
+        }
+    }
+    ) ;
+     
+    visionThread.start();*/
+
+
+
+    /////////////////////////////////////////////////////
+
+  
+    //CameraServer.startAutomaticCapture();
   
 
     // You may need to change or remove this to match your robot.
     rearRightSpark.setInverted(true);
     frontRightSpark.setInverted(true);
 
-    //m_rightMotor.setInverted(true); //THIS IS FOR THE SHOOTER
+    m_rightMotor.setInverted(true); //THIS IS FOR THE SHOOTER
 
     m_robotDrive = new MecanumDrive(frontLeftSpark, rearLeftSpark, frontRightSpark, rearRightSpark);
-    //m_shooterControl = new DifferentialDrive(m_leftMotor, m_rightMotor);
+    m_shooterControl = new DifferentialDrive(m_leftMotor, m_rightMotor);
 
-    odometry = new mecanumOdometry(
-    frontLeftSpark,
-    frontRightSpark,
-    rearLeftSpark,
-    rearRightSpark,
-    gyro,
-    0.5207,
-    0.508,
-    m_robotDrive
-  );
 
-    shootPID = new shooterPID(m_leftMotor, m_rightMotor);
     DriveJoy = new Joystick(kJoystickChannel);
-    m_robotDrive.setDeadband(.2);
-
-    autoVision = new autoBallVision(
-        odometry, 
-        FALCONCODE.motor, 
-        m_robotDrive, 
-        frontCamera, 
-        "blue", 
-        Solonoids,
-        falconCode, 
-        center, 
-        shootPID
-      );
-
-    autoControl = new auto(
-      shootPID, 
-      center, 
-      odometry,
-       FALCONCODE.motor,
-        m_robotDrive, 
-        intakeCamera,   
-         "blue",
-        Solonoids,
-        falconCode,
-        autoVision
-      );
-
-    shooterSpeedSlider = Shuffleboard.getTab("Shoot Test")
-    .add("Shooter Speed", 3000.0)
-    .withWidget(BuiltInWidgets.kTextView)
-    .withProperties(Map.of("min", 3000.0, "max", 6000.0))
-    .getEntry();
-  }
-
-  @Override
-  public void robotPeriodic() {
-    telemetrySteam.refresh();
-    Solonoids.refreshValues();
-    odometry.updateWithSmartDashboard();
-    //System.out.println(-spinJoy.getZ());
+    m_robotDrive.setDeadband(.1);
   }
 
   @Override
   public void autonomousInit() {
     startTime = Timer.getFPGATimestamp();
-    autoControl.autoStart();
+    vision.start();
+    Solonoids.autoPistonMvmt();
   }
 
   @Override
   public void autonomousPeriodic() {
-    //autoControl.autoPeriodic();
-    autoControl.autoPeriodic();
-    //autoVision.refresh();
-   /*double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
+
+    m_robotDrive.driveCartesian(-0.15, 0.0, vision.getRobotTarget());
+    falconCode.autoIntake();
+    //Solonoids.autoPistonMvmt();
+    /////////////////////////////////////////////////////////////
+
+    /*double centerX;
+    synchronized (imgLock) {
+        centerX = this.centerX;
+    }
+    double turn = centerX - (IMG_WIDTH / 2);
+    m_robotDrive.driveCartesian(-0.6, 0, turn * 0.005);
+
+
+
+    /////////////////////////////////////////////////////////////
+
+
+
+   double time = Timer.getFPGATimestamp(); //AUTONOMOUS CODE
     //System.out.println(time - startTime);
     SmartDashboard.putNumber("Auto Timer", time-startTime);
 
@@ -210,11 +216,18 @@ public class Robot extends TimedRobot {
       m_robotDrive.driveCartesian(-.3, 0, 0);
     } else {
       m_robotDrive.driveCartesian(0, 0, 0);
-    }*/
+    }
     /*frontLeftEncoder.go(4);
     frontRightEncoder.go(4);
     rearLeftEncoder.go(4);
     rearRightEncoder.go(4);*/
+
+    
+  }
+
+  @Override
+  public void disabledInit() {
+    vision.end();
   }
 
   @Override 
@@ -222,102 +235,36 @@ public class Robot extends TimedRobot {
     //Solonoids.teleopStarted();
   }
 
+  //public double getJoystickValue(Joystick joystick) {  //DEADBAND FOR USE LATER!!!!!!!!!!!
+    //  if(Math.abs(joystick.getValue() < 0.1)) return 0;
+    //  else return joystick.getValue();
+ // }
+
   @Override
   public void teleopPeriodic() {
     speedAdjust.refresh();
-    shooterSpeed.refresh();
      
     //m_robotDrive.driveCartesian(-DriveJoy.getY(), DriveJoy.getX(), DriveJoy.getZ(), 0.0); UNUSUED UNTIL FURTHER NOTICE
-    if (autoCenterBttn.get()) {
-      m_robotDrive.driveCartesian(0.0, 0.0, center.getTurn());
-    } else {
-      m_robotDrive.driveCartesian(
-        speedAdjust.applyMaxSpeed(DriveJoy.getY()),
-        speedAdjust.applyMaxSpeed(-DriveJoy.getX()), 
-        speedAdjust.applyMaxSpeed(
-          // deadband:
-          //(-spinJoy.getZ() <= 0.05 && -spinJoy.getZ() >= -0.05) ? 0.0 : -spinJoy.getZ()
-          -spinJoy.getZ()
-        )
-      );
-    }
+    m_robotDrive.driveCartesian(
+      speedAdjust.applyMaxSpeed(DriveJoy.getY()),
+      speedAdjust.applyMaxSpeed(-DriveJoy.getX()), 
+      speedAdjust.applyMaxSpeed(-spinJoy.getZ())
+      //gyro.getGyro()
+    );
+    
 
 
-    //double speed = shooterSpeedSlider.getDouble(0.0);
 
-    //SmartDashboard.putNumber("Shooter Speed !", speed);
     if (FXNJoy.getTrigger()) {
-      //m_shooterControl.arcadeDrive(-shooterSpeed.currentMax, 0);
-      // :)
-      //m_shooterControl.arcadeDrive(speed, 0.0);
-      //shootPID.setSpeed(speed);
-      if (FXNJoy.getThrottle() > 0) {
-        // Low goal
-        SmartDashboard.putString("Goal", "low");
-        shootPID.setSpeed(2200.0);
-      } else {
-        // High goal
-        SmartDashboard.putString("Goal", "high");
-        double speed = center.getSuggestedSpeed();
-        SmartDashboard.putNumber("Shooter Speed", speed);
-        shootPID.setSpeed(speed);
-      }
+      m_shooterControl.arcadeDrive(-0.7, 0);
     } else {
-
-      //m_shooterControl.arcadeDrive(0, 0);
-      shootPID.setSpeed(0.0);
+      m_shooterControl.arcadeDrive(0, 0);
     }
-    //falconCode.ballLift();
-    FALCONCODE.move(); //NOW BEING USED 
-    //FALCONCODE.winchMove();
+    falconCode.ballLift();
+    //falcon.move(); //UNUSED UNTIL FURTHER NOTICE
     Solonoids.pistonMovement(); 
     falconCode.intakeWheel();
-    //center.distanceGauge();
-    shootPID.refresh();
-    }
-
-    @Override
-    public void disabledInit() {
-      odometry.robotDisabled = true;
-    }
-
-    // Measuring Rotation to Meter ratio
-    RelativeEncoder[] test_encoders;
-    Double[] test_startRotations;
-
-    @Override
-    public void testInit() {
-      test_encoders = new RelativeEncoder[] {
-        frontLeftSpark.getEncoder(),
-        frontRightSpark.getEncoder(),
-        rearLeftSpark.getEncoder(),
-        rearRightSpark.getEncoder()
-      };
-
-      test_startRotations = new Double[] {
-        test_encoders[0].getPosition(),
-        test_encoders[1].getPosition(),
-        test_encoders[2].getPosition(),
-        test_encoders[3].getPosition()
-      };
-
-      m_robotDrive.driveCartesian(-0.4, 0.0, 0.0);
-    }
-
-    @Override
-    public void testPeriodic() {
-      double dist = Math.abs(
-        (test_encoders[0].getPosition()-test_startRotations[0]) +
-        (test_encoders[1].getPosition()-test_startRotations[1]) +
-        (test_encoders[2].getPosition()-test_startRotations[2]) +
-        (test_encoders[3].getPosition()-test_startRotations[3])
-      )/4;
-      System.out.println(dist);
-      if (dist >= 20.0) {
-        m_robotDrive.driveCartesian(0.0, 0.0, 0.0);
-      } else {
-        m_robotDrive.driveCartesian(-0.4, 0.0, 0.0);
-      }
+    //images.process(source0);
     }
 }
-//           :) (: 
+//           :)

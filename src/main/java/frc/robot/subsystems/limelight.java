@@ -5,7 +5,7 @@ package frc.robot.subsystems;
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
-/*----------------------------------------------------------------------------
+/*----------------------------------------------------------------------------*/
 
 
 
@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import frc.robot.Robot;
 //import frc.robot.subsystems.PID;
 //import frc.robot.commands.UpdateCameraValues;
-public class limelightOld extends SubsystemBase {
-  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-toast"); 
+public class limelight extends SubsystemBase {
+  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight"); 
   NetworkTableEntry tx= table.getEntry("tx"); 
   NetworkTableEntry ty = table.getEntry("ty"); 
   NetworkTableEntry ta = table.getEntry("ta");
@@ -31,7 +31,7 @@ public class limelightOld extends SubsystemBase {
                                0.25, 
                                -0.2); 
 
-	  public limelightOld() {
+	  public limelight() {
 
 	}
 
@@ -62,5 +62,3 @@ public Boolean getAligned() {
 }
 }
 
-
-*/
